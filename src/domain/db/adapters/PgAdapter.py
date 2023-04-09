@@ -1,9 +1,15 @@
 import psycopg2
-from config import PostgreSqlConfig
 
 class PgAdapter:
   def __init__(self):
-    self.__driver = psycopg2.connect(PostgreSqlConfig.connStr)
+    self.__driver = psycopg2.connect("")
+
+  def executeDdlScripts(self, ddls):
+    cur = self.__driver.cursor()
+    for ddl in ddls:
+      cur.execute(ddl)    
+    cur.close()
+    self.__driver.commit()
 
   def executeDmlScripts(self, cmd, params=None):
     self.__execute(cmd, False, params)

@@ -1,8 +1,0 @@
-
-db:
-    postgresql:
-        connStr: some-connection-string
-    neo4j:
-        uri: uri
-        user: user
-        password: password
