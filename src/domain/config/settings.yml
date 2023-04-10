@@ -1,0 +1,10 @@
+db:
+  postgresql:
+     conn_str: ""
+  neo4j: 
+     uri: ""
+     user: ""
+     password: ""
+data:
+  total: 100
+  limit: 3923922
