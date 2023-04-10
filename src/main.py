@@ -6,8 +6,8 @@ def main():
 
 def configurePostgreSqlDatabase():
   commands = (
-      PostgreSqlScripts.CREATE_TABLE_CITATION,
       PostgreSqlScripts.CREATE_TABLE_PATENT,
+      PostgreSqlScripts.CREATE_TABLE_CITATION,
       PostgreSqlScripts.CREATE_INDEX_PATENT_ID,
       PostgreSqlScripts.CREATE_INDEX_PATENT_AUTHOR,
       PostgreSqlScripts.CREATE_INDEX_PATENT_NAME,
