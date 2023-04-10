@@ -1,2 +1,8 @@
 class Settings:
-    DATA_TOTAL = 100
+    RANDOM_DATA_TOTAL = 100
+    DATA_MAX = 3923922
+    DATA_MIN = 100
+    DATA_START_DATE = "1975-01-01T00:00:00.000Z"
+    DATA_END_DATE = "1999-12-31T00:00:00.000Z"
+    DATASET_FILE_PATH = "domain/dataset/stanford/dataset.txt"
+    POSTGRESQL_CONN_STR = ""

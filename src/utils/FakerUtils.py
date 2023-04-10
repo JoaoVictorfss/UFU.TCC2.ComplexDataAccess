@@ -15,30 +15,21 @@ class FakerUtils:
            if len(firstName) <= MAX_FIRST_NAME_SIZE:
             firstNames.add(firstName)
                    
-        return firstNames
-    
-    @staticmethod      
-    def generateDescriptions(count):
-        descriptions = []      
-        faker = Faker()
-        
-        while len(descriptions) < count:
-            text = faker.text()
-            
-            if len(text) <= MAX_DESCRIPTION_SIZE:
-              descriptions.append(text)
-        
-        return descriptions
+        return list(firstNames)
     
     @staticmethod      
     def generateUsPatentClassifications(count):
-        #Adicioanr algumas classicações e retornar
+        #Adicionar algumas classicações e retornar
         classifications = []      
         
         return classifications
     
     @staticmethod      
-    def generateDateTimes(count):
+    def generateDateTimes(startDate, endDate, count):
         datetimes = []      
+        faker = Faker()
+        
+        while len(datetimes) < count:
+            datetimes.append(faker.date.between(startDate, endDate))
         
         return datetimes

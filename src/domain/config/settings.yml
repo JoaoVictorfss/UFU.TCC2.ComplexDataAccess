@@ -6,5 +6,12 @@ db:
      user: ""
      password: ""
 data:
-  total: 100
-  limit: 3923922
+  fake:
+    total: 50
+  dataset:
+    start_date: "1975-01-01T00:00:00.000Z"
+    end_date: "1999-12-31T00:00:00.000Z"
+    total: 3923922
+    filePath: "domain/dataset/stanford/dataset.txt"
+  max: 3923922
+  min: 100

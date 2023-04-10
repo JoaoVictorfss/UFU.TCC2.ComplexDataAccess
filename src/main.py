@@ -1,36 +1,28 @@
-from domain.db.adapters.PgAdapter import PgAdapter
-from domain.db.scripts.PostgreSqlScripts import PostgreSqlScripts
 from domain.config.Settings import Settings
 from utils.FakerUtils import FakerUtils
+from utils.FileUtils import FileUtils
+from utils.RandomUtils import RandomUtils
+from infra.databases.PostgreSqlDatabase import PostgreSqlDatabase
 
-settings = Settings()
-
-def main():
- createPostgreSqlDatabase()
- #createNeo4jDatabase()
- dataLoad()
-
-def createPostgreSqlDatabase():
-  commands = (
-      PostgreSqlScripts.CREATE_TABLE_PATENT,
-      PostgreSqlScripts.CREATE_TABLE_CITATION,
-      PostgreSqlScripts.CREATE_INDEX_PATENT_ID,
-      PostgreSqlScripts.CREATE_INDEX_PATENT_AUTHOR,
-      PostgreSqlScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
-      PostgreSqlScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
-  )
-  pgAdapter = PgAdapter()
-  pgAdapter.executeDdlScripts(commands)
-  pgAdapter.closeConnection()
+pgDatabase = PostgreSqlDatabase()
 
 def dataLoad():  
-  #TO DO deixar de forma paralela
+  records = FileUtils.retrieveData(Settings.DATASET_FILE_PATH)
   
-  authors = FakerUtils.generateUniqueFirstNames(settings.DATA_TOTAL)
-  classifications = FakerUtils.generateUsPatentClassifications(settings.DATA_TOTAL)
-  descriptions = FakerUtils.generateDescriptions(settings.DATA_TOTAL)
-  registratiionDatetimes = FakerUtils.generateDateTimes(settings.DATA_TOTAL)
+  randomDataTotal = Settings.RANDOM_DATA_TOTAL
+  authors = FakerUtils.generateUniqueFirstNames(randomDataTotal)
+  classifications = FakerUtils.generateUsPatentClassifications(randomDataTotal)
+  datetimes = FakerUtils.generateDateTimes(Settings.DATA_START_DATE, Settings.DATA_END_DATE, randomDataTotal)
   
-  #TO DO popular bancos
-    
+  for i in range(Settings.DATA_MIN):
+    firstRecordData = (records[i][0], authors[RandomUtils.getRandomInt(randomDataTotal)], classifications[RandomUtils.getRandomInt(randomDataTotal)], datetimes[RandomUtils.getRandomInt(randomDataTotal)])
+    secondRecordData = (records[i][1], authors[RandomUtils.getRandomInt(randomDataTotal)], classifications[RandomUtils.getRandomInt(randomDataTotal)], datetimes[RandomUtils.getRandomInt(randomDataTotal)]) 
+    pgDatabase.setRecords((firstRecordData, secondRecordData))
+
+def main():
+ pgDatabase.init()
+ #createNeo4jDatabase()
+ dataLoad()
+ pgDatabase.close()
+ 
 main()
