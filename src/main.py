@@ -2,7 +2,7 @@ from domain.config.Settings import Settings
 from utils.FakerUtils import FakerUtils
 from utils.FileUtils import FileUtils
 from utils.RandomUtils import RandomUtils
-from tests.Tests import Tests
+from tests.TestsHandler import TestsHandler
 
 def dataPreProcessing(): 
   #retrieves data from dataset file
@@ -23,13 +23,11 @@ def dataPreProcessing():
   return records
   
 def main():
-  tests = Tests()
-  
-  #data load tests
   records = dataPreProcessing()
-  tests.dataLoadTest(records)
   
-  tests.start()
-  tests.end()
+  testsHandler = TestsHandler()
+  testsHandler.startTests() 
+  testsHandler.executeDataLoadTest(records)
+  testsHandler.endTests()
  
 main()
