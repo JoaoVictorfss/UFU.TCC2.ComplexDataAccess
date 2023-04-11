@@ -1,4 +1,4 @@
-class FileUtils:
+class FileHandler:
     @staticmethod
     def retrieveData(path, separator=" "):        
         with open(path) as f:

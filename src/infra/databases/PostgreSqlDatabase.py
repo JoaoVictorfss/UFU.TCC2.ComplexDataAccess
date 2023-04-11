@@ -4,7 +4,7 @@ from domain.db.scripts.PostgreSqlScripts import PostgreSqlScripts
 
 class PostgreSqlDatabase:
     def init(self):
-        self.__pgAdapter = PgAdapter(Settings.POSTGRESQL_CONN_STR)
+        self.__pgAdapter = PgAdapter(Settings.DB_POSTGRESQL_CONN_STR)
         commands = (
             PostgreSqlScripts.CREATE_TABLE_PATENT,
             PostgreSqlScripts.CREATE_TABLE_CITATION,

@@ -15,3 +15,5 @@ data:
     filePath: "domain/dataset/stanford/dataset.txt"
   max: 3923922
   min: 100
+results:
+    basePath: "tests/results"

@@ -4,7 +4,7 @@ from domain.db.scripts.Neo4jScripts import Neo4jScripts
 
 class Neo4jDatabase:
     def init(self):
-        self.__neo4jAdapter = Neo4jAdpater(Settings.NEO4J_URI, Settings.NEO4J_USER, Settings.NEO4J_PASSWORD)
+        self.__neo4jAdapter = Neo4jAdpater(Settings.DB_NEO4J_URI, Settings.DB_NEO4J_USER, Settings.DB_NEO4J_PASSWORD)
         commands = (
             Neo4jScripts.CREATE_INDEX_PATENT_ID,
             Neo4jScripts.CREATE_INDEX_PATENT_AUTHOR,
