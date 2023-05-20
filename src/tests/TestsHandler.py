@@ -3,16 +3,15 @@ from datetime import datetime
 from infra.databases.PostgreSqlDatabase import PostgreSqlDatabase
 from infra.databases.Neo4jDatabase import Neo4jDatabase
 from infra.io.logs.LogInCsvFile import LogInCsvFile
-from domain.config.Settings import Settings
 
 NEO4J_SGBD = "Neo4j"
 POSTGRESQL_SGBD = "PostgreSql"
 DATA_LOAD_TEST = "Data Load"
 
 class TestsHandler:
-    def __init__(self):
+    def __init__(self, resultsFilePath):
         self._csvFieldNames = ["SGBD", "Test Type", "Start At", "End At", "Executation Time"]
-        self._csvFilePath = f"{Settings.RESULTS_BASE_PATH}/metrics.csv"
+        self._csvFilePath = f"{resultsFilePath}/metrics.csv"
         self._pgDatabase = PostgreSqlDatabase()
         self._neo4jDatabase = Neo4jDatabase()
     

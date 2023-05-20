@@ -1,0 +1,20 @@
+db:
+  postgresql:
+    conn_str: ''
+  neo4j:
+    uri: ''
+    user: ''
+    password: ''
+data:
+  fake:
+    authorsTotal: 10
+    classificationsTotal: 10
+    datetimesTotal: 10
+  dataset:
+    start_date: '1975-01-01 00:00:00'
+    end_date: '1999-12-31 00:00:00'
+    total: 17
+    filePath: domain/dataset/snap/stanford/dataset.txt
+  max: 10
+results:
+  basePath: tests/results

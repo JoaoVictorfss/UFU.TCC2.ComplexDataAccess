@@ -1,8 +1,6 @@
 from faker import Faker
 import random
-
-MAX_DESCRIPTION_SIZE = 300
-MAX_FIRST_NAME_SIZE = 60
+from datetime import datetime
 
 class FakerUtils:
     @staticmethod
@@ -13,7 +11,7 @@ class FakerUtils:
         while len(firstNames) < count:
            firstName = faker.unique.first_name()
            
-           if len(firstName) <= MAX_FIRST_NAME_SIZE:
+           if len(firstName) <= 60:
             firstNames.add(firstName)
                    
         return list(firstNames)
@@ -35,8 +33,10 @@ class FakerUtils:
     def generateDateTimes(startDate, endDate, count):
         datetimes = []      
         faker = Faker()
+        format = "%Y-%m-%d %H:%M:%S"
         
         while len(datetimes) < count:
-            datetimes.append(faker.date.between(startDate, endDate))
+            generatedDate = faker.date_between(datetime.strptime(startDate, format), datetime.strptime(endDate, format))
+            datetimes.append(generatedDate)       
         
         return datetimes
