@@ -16,8 +16,8 @@ def dataPreProcessing():
   records = [] 
   
   for i in range(Settings.DATA_MIN):
-    fromNodeData = (patentIdentifiers[i][0], authors[RandomUtils.getRandomInt( Settings.DATA_FAKE_TOTAL)], classifications[RandomUtils.getRandomInt( Settings.DATA_FAKE_TOTAL)], datetimes[RandomUtils.getRandomInt( Settings.DATA_FAKE_TOTAL)])
-    toNodeData = (patentIdentifiers[i][1], authors[RandomUtils.getRandomInt( Settings.DATA_FAKE_TOTAL)], classifications[RandomUtils.getRandomInt( Settings.DATA_FAKE_TOTAL)], datetimes[RandomUtils.getRandomInt( Settings.DATA_FAKE_TOTAL)])   
+    fromNodeData = (patentIdentifiers[i][0], authors[RandomUtils.getRandomInt(Settings.DATA_FAKE_TOTAL)], classifications[RandomUtils.getRandomInt(Settings.DATA_FAKE_TOTAL)], datetimes[RandomUtils.getRandomInt(Settings.DATA_FAKE_TOTAL)], patentIdentifiers[i][1])
+    toNodeData = (patentIdentifiers[i][1], authors[RandomUtils.getRandomInt(Settings.DATA_FAKE_TOTAL)], classifications[RandomUtils.getRandomInt(Settings.DATA_FAKE_TOTAL)], datetimes[RandomUtils.getRandomInt(Settings.DATA_FAKE_TOTAL)], None)   
     records.append((fromNodeData, toNodeData))
   
   return records

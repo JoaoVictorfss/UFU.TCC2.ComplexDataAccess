@@ -1,6 +1,6 @@
-from domain.db.adapters.PgAdapter import PgAdapter
 from domain.config.Settings import Settings
-from domain.db.scripts.PostgreSqlScripts import PostgreSqlScripts
+from adapters.PgAdapter import PgAdapter
+from scripts.PostgreSqlScripts import PostgreSqlScripts
 
 class PostgreSqlDatabase:
     def init(self):

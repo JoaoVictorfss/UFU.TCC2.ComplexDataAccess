@@ -1,6 +1,6 @@
-from domain.db.adapters.Neo4jAdpater import Neo4jAdpater
 from domain.config.Settings import Settings
-from domain.db.scripts.Neo4jScripts import Neo4jScripts
+from adapters.Neo4jAdpater import Neo4jAdpater
+from scripts.Neo4jScripts import Neo4jScripts
 
 class Neo4jDatabase:
     def init(self):
@@ -18,18 +18,23 @@ class Neo4jDatabase:
         for record in records:
            self.__neo4jAdapter.executeQuery(
                Neo4jScripts.CREATE_NODE_PATENT, 
-               parameters = 
-                {
-                   'rows': {
-                       'patentId': record[0],
-                       'author': record[1],
-                       'classification': record[2],
-                       'registeredAt': record[3]
+               [
+                   {
+                        'patentId': records[0][0],
+                        'author': records[0][1],
+                        'classification': records[0][2],
+                        'registeredAt': records[0][3],
+                        'relatedPatentId': records[0][4]
+                    },
+                    {
+                        'patentId': records[1][0],
+                        'author': records[1][1],
+                        'classification': records[1][2],
+                        'registeredAt': records[1][3],
+                        'relatedPatentId': records[1][4]
                     }
-                })
-        # TO DO criar relacionamento
-        # https://towardsdatascience.com/create-a-graph-database-in-neo4j-using-python-4172d40f89c4
-  
+                ])
+             
     def close(self): 
         self.__neo4jAdapter.closeConnection()
  
