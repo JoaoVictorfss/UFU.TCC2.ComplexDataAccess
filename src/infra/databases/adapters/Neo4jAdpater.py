@@ -11,9 +11,9 @@ class Neo4jAdpater:
        session.run(query)   
     session.close()
     
-  def executeQuery(self, query, rows=None):
+  def executeTransaction(self, query, rows=None):
     session = self.__driver.session()    
-    results = list(session.run(query, rows))
+    results = list(session.write_transaction(query, rows))
     session.close()
     
     return results

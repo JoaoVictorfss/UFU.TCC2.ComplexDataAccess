@@ -1,3 +1,4 @@
+import concurrent.futures
 from datetime import datetime
 from infra.databases.PostgreSqlDatabase import PostgreSqlDatabase
 from infra.databases.Neo4jDatabase import Neo4jDatabase
@@ -20,8 +21,12 @@ class TestsHandler:
         self._neo4jDatabase.init()
  
     def executeDataLoadTest(self, records):
-        self._executePgDataLoadTest(records)
-        self._executeNeo4jDataLoadTest(records)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_pg = executor.submit(self._executePgDataLoadTest, records)
+            future_neo4j = executor.submit(self._executeNeo4jDataLoadTest, records)
+
+            future_pg.result()
+            future_neo4j.result()
         
     def endTests(self):
         self._pgDatabase.close()
