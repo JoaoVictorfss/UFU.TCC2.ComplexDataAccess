@@ -21,3 +21,11 @@ Complex data access performance analysis between PostgreSql and Neo4j
  - https://towardsdatascience.com/create-a-graph-database-in-neo4j-using-python-4172d40f89c4
  - PostgreSql Database: https://api.elephantsql.com/console/10e20769-a11f-44b8-9721-a8304dcca3eb/details
  - https://www.elephantsql.com/plans.html
+
+## Scripts
+ - Clean Envirommet
+    - MATCH (n) DETACH DELETE n
+    - drop table patent, citation
+ - Count 
+    - select count(*) from patent
+    - select count(*) from citation
