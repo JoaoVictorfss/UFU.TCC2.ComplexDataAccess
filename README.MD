@@ -5,6 +5,7 @@ Complex data access performance analysis between PostgreSql and Neo4j
  - pip3 install faker
  - pip3 install psycopg2
  - pip3 install neo4j
+ - python3 main.py
 
 ## Dataset
  - https://snap.stanford.edu/data/cit-Patents.html 
@@ -13,9 +14,6 @@ Complex data access performance analysis between PostgreSql and Neo4j
 ## Db Conectors
  - Neo4j: https://snap.stanford.edu/data/roadNet-CA.html 
  - PostgreSql: https://www.psycopg.org/docs/
-
-## Anaconda
- - https://www.anaconda.com/products/distribution
 
 ## Links
  - https://towardsdatascience.com/create-a-graph-database-in-neo4j-using-python-4172d40f89c4
