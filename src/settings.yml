@@ -2,15 +2,15 @@ db:
   postgresql:
     conn_str: ''
   neo4j:
-    uri: ''
-    user: ''
+    uri: 'neo4j+s://b169bf9c.databases.neo4j.io'
+    user: 'neo4j'
     password: ''
 tests:
   traversal:
     filters:
       patentId: '3858241'
-      author: 'Lisa'
-      registerDate: '1975-01-01 00:00:00'
+      author: 'Paul'
+      registerDate: '1975-01-01'
 data:
   fake:
     authorsTotal: 10

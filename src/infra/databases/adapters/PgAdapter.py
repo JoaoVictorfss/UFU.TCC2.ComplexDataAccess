@@ -5,7 +5,7 @@ class PgAdapter:
   def __init__(self, connStr):
     try:
       self.__conn = psycopg2.connect(connStr)
-    except psycopg2.Error as error:
+    except Exception as error:
       Log.error(f"[PgAdapter] - An error occurred while trying to connect ~ Error: {error}")
 
   def executeDdls(self, ddls):
@@ -16,7 +16,7 @@ class PgAdapter:
         cur.execute(ddl)
       self.__conn.commit()
       Log.information(f"[PgAdapter executeDdls] - the ddls were executed successfully")
-    except psycopg2.Error as error:
+    except Exception as error:
       Log.error(f"[PgAdapter executeDdls] - An error occurred while trying to execute ddls ~ Error: {error}")
     finally:
         cur.close()
@@ -28,25 +28,26 @@ class PgAdapter:
       cur.execute(cmd, params)
       self.__conn.commit()
       Log.information(f"[PgAdapter executeDml] - The dml was executed successfully")
-    except psycopg2.Error as error:
+    except Exception as error:
       Log.error(f"[PgAdapter executeDml] - An error occurred while trying to execute dml ~ Error: {error}")
     finally:
         cur.close()
         
-  def executeDql(self, cmd, params=None):     
+  def executeDql(self, cmd, params=None):
+    records = None     
     try:
       Log.debug(f"[PgAdapter executeDql] - Try to execute dql {cmd} with params {params}")
       cur = self.__conn.cursor()
       cur.execute(cmd, params)
-      results = cur.fetchall()
-      Log.debug(f"[PgAdapter executeDql] - {len(results)} records found")
+      records = cur.fetchall()
+      Log.debug(f"[PgAdapter executeDql] - {len(records)} records found")
       Log.information(f"[PgAdapter executeDql] - The dql was executed successfully")
-      return results
-    except psycopg2.Error as error:
+    except Exception as error:
       Log.error(f"[PgAdapter executeDql] - An error occurred while trying to execute dql ~ Error: {error}")
       return None
     finally:
         cur.close() 
+        return records
 
   def closeConnection(self):
       self.__conn.close()

@@ -5,14 +5,14 @@ class LogInConsole:
   @staticmethod
   def information(message):
     datetimeStr = datetime.now().strftime(BRAZIL_DATE_FORMAT)
-    print(f"INFORMATION {datetimeStr} {message}\n")
+    print(f"\033[93m{datetimeStr} {message}\033[0m\n")
     
   @staticmethod
   def debug(message):
     datetimeStr = datetime.now().strftime(BRAZIL_DATE_FORMAT)
-    print(f"DEBUG {datetimeStr} {message}\n")
+    print(f"\033[94m{datetimeStr} {message}\033[0m\n")
   
   @staticmethod
   def error(message):
     datetimeStr = datetime.now().strftime(BRAZIL_DATE_FORMAT)
-    print(f"ERROR {datetimeStr} {message}\n")
+    print(f"\033[91m{datetimeStr} {message}\033[0m\n")

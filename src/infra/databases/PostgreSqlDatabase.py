@@ -18,7 +18,7 @@ class PostgreSqlDatabase:
             self.__pgAdapter.executeDml(
                 PostgreSqlScripts.INSERT_INTO_PATENT_IF_NOT_EXIST, (record[0], record[1], record[2], record[3], record[0],))
         self.__pgAdapter.executeDml(
-            PostgreSqlScripts.INSERT_INTO_CITATION, (records[0][0], records[1][0],))
+            PostgreSqlScripts.INSERT_INTO_CITATION_IF_NOT_EXISTS, (records[0][0], records[1][0], records[0][0], records[1][0],))
 
     def getPatentCitationsById(self, patentId):
         self.__pgAdapter.executeDql(PostgreSqlScripts.GET_PATENT_CITATIONS_BY_ID, (patentId,))

@@ -26,16 +26,20 @@ class PostgreSqlScripts:
         SELECT 1 FROM patent WHERE patent_id = %s
       )
   """
-  INSERT_INTO_CITATION = "INSERT INTO citation (from_id, to_id) VALUES(%s,%s)"
+  INSERT_INTO_CITATION_IF_NOT_EXISTS = """
+    INSERT INTO citation (from_id, to_id) 
+    SELECT %s, %s
+    WHERE NOT EXISTS (
+      SELECT 1 FROM citation WHERE from_id = %s AND to_id = %s
+    )
+  """
   FIND_PATENT_BY_ID = "SELECT * FROM patent WHERE patent_id = %s"
-  # Consulta para obter as patentes que citam uma patente específica
   GET_PATENT_CITATIONS_BY_ID = """
       SELECT p.*
       FROM citation c
       INNER JOIN patent p ON c.to_id = p.patent_id
       WHERE c.from_id = %s
   """
-  # Consulta para obter as patentes que citam as patentes de um mesmo autor após uma determinada data
   GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTER_DATE = """
       SELECT p.*
       FROM citation c

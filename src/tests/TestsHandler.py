@@ -24,31 +24,37 @@ class TestsHandler:
     def startTests(self):
         Log.information("[TestsHandler] Try to run tests")
         self._pgDatabase.init(self._settings)
-        #self._neo4jDatabase.init(self._settings)
-        Log.information("[TestsHandler] Tests run successfully")
+        self._neo4jDatabase.init(self._settings)
 
     def executeDataLoadTest(self, records):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_pg = executor.submit(self._executePgDataLoadTest, records)
+            future_neo4j = executor.submit(self._executeNeo4jDataLoadTest, records)
             future_pg.result()
+            future_neo4j.result()
 
     def executePatentCitationsTraversalTest(self):
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_pg = executor.submit(self._executePatentCitationsTraversalTest, self._settings.tests_traversal_filters_patent_id)
+            future_pg = executor.submit(self._executePgPatentCitationsTraversalTest, self._settings.tests_traversal_filters_patent_id)
+            future_neo4j = executor.submit(self._executeNeo4jPatentCitationsTraversalTest, self._settings.tests_traversal_filters_patent_id)
             future_pg.result()
+            future_neo4j.result()
     
-    def executeAuthorPatentCitationsTraversalTest(self):
-        date = self._settings.tests_traversal_filters_register_date
+    def executeAuthorPatentCitationsTraversalTest(self):        
+        date = datetime.strptime(self._settings.tests_traversal_filters_register_date, "%Y-%m-%d").date()
         author = self._settings.tests_traversal_filters_author
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_pg = executor.submit(self._executeAuthorPatentCitationsTraversalTest, author, date)
+            future_pg = executor.submit(self._executePgAuthorPatentCitationsTraversalTest, author, date)
+            future_neo4j = executor.submit(self._executeNeo4jAuthorPatentCitationsTraversalTest, author, date)
             future_pg.result()
+            future_neo4j.result()
             
     def endTests(self):
         self._pgDatabase.close()
-        # self._neo4jDatabase.close()   
+        self._neo4jDatabase.close()
+        Log.information("[TestsHandler] Tests run successfully")   
     
-    def _executePatentCitationsTraversalTest(self, patentId):
+    def _executePgPatentCitationsTraversalTest(self, patentId):
         try:
             Log.information("[TestsHandler executePatentCitationsTraversalTest] Try to run pg patent traversal test")
 
@@ -64,7 +70,7 @@ class TestsHandler:
         except Exception as error:
             Log.error(f"[TestsHandler executePatentCitationsTraversalTest] - An error occurred while trying to execute pg patent traversal test ~ Error: {error}")
 
-    def _executeAuthorPatentCitationsTraversalTest(self, author, date):
+    def _executePgAuthorPatentCitationsTraversalTest(self, author, date):
         try:
             Log.information("[TestsHandler executeAuthorPatentCitationsTraversalTest] Try to run pg patent traversal test")
 
@@ -99,7 +105,8 @@ class TestsHandler:
     
     def _executeNeo4jDataLoadTest(self, records):
         try:
-            Log.information("[TestsHandler executeNeo4jDataLoadTest] Try to run Neo4j data load test")
+            Log.information(
+                "[TestsHandler executeNeo4jDataLoadTest] Try to run neo4j data load test")
 
             startAt = datetime.now()
 
@@ -110,10 +117,44 @@ class TestsHandler:
 
             self._logInCsvFile(NEO4J_SGBD, DATA_LOAD_TEST, startAt, endAt)
             
-            Log.information("[TestsHandler executeNeo4jDataLoadTest] Neo4j data load test run successfully")
+            Log.information("[TestsHandler executeNeo4jDataLoadTest] neo4j data load test run successfully")
         except Exception as error:
-            Log.error(f"[TestsHandler executePgDataLoadTest] - An error occurred while trying to execute pg data load test ~ Error: {error}")
-        
+            Log.error(f"[TestsHandler executePgDataLoadTest] - An error occurred while trying to execute neo4j data load test ~ Error: {error}")
+
+    def _executeNeo4jPatentCitationsTraversalTest(self, patentId):
+        try:
+            Log.information("[TestsHandler executeNeo4jPatentCitationsTraversalTest] Try to run neo4j patent traversal test")
+
+            startAt = datetime.now()
+
+            self._neo4jDatabase.getPatentCitationsById(patentId)
+
+            endAt = datetime.now()
+
+            self._logInCsvFile(NEO4J_SGBD, f"{TRAVERSAL_TEST}-{PATENT_CITATIONS}", startAt, endAt)
+
+            Log.information("[TestsHandler executeNeo4jPatentCitationsTraversalTest] Neo4j patent traversal test run successfully")
+        except Exception as error:
+            Log.error(f"[TestsHandler executeNeo4jPatentCitationsTraversalTest] - An error occurred while trying to execute neo4j patent traversal test ~ Error: {error}")
+
+    def _executeNeo4jAuthorPatentCitationsTraversalTest(self, author, date):
+        try:
+            Log.information("[TestsHandler executeNeo4jAuthorPatentCitationsTraversalTest] Try to run neo4j patent traversal test")
+
+            startAt = datetime.now()
+
+            self._neo4jDatabase.getPatentCitationsByAuthorAndRegisterDate(author, date)
+
+            endAt = datetime.now()
+
+            self._logInCsvFile(NEO4J_SGBD, f"{TRAVERSAL_TEST}-{AUTHOR_PATENT_CITATIONS}", startAt, endAt)
+
+            Log.information(
+                "[TestsHandler executeNeo4jAuthorPatentCitationsTraversalTest] Neo4j patent traversal test run successfully")
+        except Exception as error:
+            Log.error(
+                f"[TestsHandler executeNeo4jAuthorPatentCitationsTraversalTest] - An error occurred while trying to execute neo4j patent traversal test ~ Error: {error}")
+    
     def _logInCsvFile(self, sgbd, testType, startAt, endAt):
         fileName = testType.lower().replace(" ", "_").replace("-", "_")
         filePath = f"{self._csvFileBasePath}/{sgbd.lower()}/{fileName}.csv"
