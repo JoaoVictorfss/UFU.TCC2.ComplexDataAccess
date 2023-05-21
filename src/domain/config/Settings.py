@@ -5,6 +5,7 @@ class Settings:
         self.db_config = self.config['db']
         self.data_config = self.config['data']
         self.results_config = self.config['results']
+        self.tests_config = self.config['tests']
 
     def load_config(self, config_file):
         with open(config_file, 'r') as file:
@@ -58,11 +59,19 @@ class Settings:
     @property
     def data_max(self):
         return self.data_config['max']
-
-    @property
-    def traversal_patent_id(self):
-        return self.data_config['traversal']['patentId']
     
     @property
     def results_base_path(self):
         return self.results_config['basePath']
+
+    @property
+    def tests_traversal_filters_patent_id(self):
+        return self.tests_config['traversal']['filters']['patentId']
+    
+    @property
+    def tests_traversal_filters_author(self):
+        return self.tests_config['traversal']['filters']['author']
+    
+    @property
+    def tests_traversal_filters_register_date(self):
+        return self.tests_config['traversal']['filters']['registerDate']

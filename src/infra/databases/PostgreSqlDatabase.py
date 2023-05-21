@@ -16,12 +16,15 @@ class PostgreSqlDatabase:
     def setRecords(self, records):
         for record in records:
             self.__pgAdapter.executeDml(
-                PostgreSqlScripts.INSERT_INTO_PATENT, (record[0], record[1], record[2], record[3], record[0],))
+                PostgreSqlScripts.INSERT_INTO_PATENT_IF_NOT_EXIST, (record[0], record[1], record[2], record[3], record[0],))
         self.__pgAdapter.executeDml(
             PostgreSqlScripts.INSERT_INTO_CITATION, (records[0][0], records[1][0],))
 
-    def getReferencingPatents(self, patentId):
-        self.__pgAdapter.executeDql(PostgreSqlScripts.GET_REFERENCING_PATENTS, (patentId,))
+    def getPatentCitationsById(self, patentId):
+        self.__pgAdapter.executeDql(PostgreSqlScripts.GET_PATENT_CITATIONS_BY_ID, (patentId,))
     
+    def getPatentCitationsByAuthorAndRegisterDate(self, author, date):
+        self.__pgAdapter.executeDql(PostgreSqlScripts.GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTER_DATE, (author, date,))
+        
     def close(self): 
         self.__pgAdapter.closeConnection() 

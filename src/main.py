@@ -29,11 +29,12 @@ def getIndex(len):
 def main():
   settings = Settings('settings.yml')
   records = dataPreProcessing(settings)
-  
+
   testsHandler = TestsHandler(settings)
   testsHandler.startTests() 
   testsHandler.executeDataLoadTest(records)
-  testsHandler.executePatentTraversalTest(settings.traversal_patent_id)
+  testsHandler.executePatentCitationsTraversalTest()
+  testsHandler.executeAuthorPatentCitationsTraversalTest()
   testsHandler.endTests()
 
 main()

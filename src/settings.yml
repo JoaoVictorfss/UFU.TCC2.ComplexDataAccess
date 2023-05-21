@@ -5,9 +5,13 @@ db:
     uri: ''
     user: ''
     password: ''
-data:
+tests:
   traversal:
-    patentId: ''
+    filters:
+      patentId: '3858241'
+      author: 'Lisa'
+      registerDate: '1975-01-01 00:00:00'
+data:
   fake:
     authorsTotal: 10
     classificationsTotal: 10
