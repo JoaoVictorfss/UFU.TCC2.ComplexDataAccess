@@ -53,7 +53,7 @@ class TestsHandler:
         self._logInCsvFile(NEO4J_SGBD, DATA_LOAD_TEST, startAt, endAt)
     
     def _logInCsvFile(self, sgbd, testType, startAt, endAt):
-        file = f"{self._csvFileBasePath}/{sgbd.lower()}/{testType.lower()}.csv"
+        fileName = f"{self._csvFileBasePath}/{sgbd.lower()}/{testType.lower()}.csv"
         data = [{
             "SGBD": sgbd,
             "Test Type": testType,
@@ -61,4 +61,4 @@ class TestsHandler:
             "End At": endAt,
             "Executation Time": startAt - endAt
         }]
-        LogInCsvFile.write(file, self._csvFieldNames, data)
+        LogInCsvFile.write(fileName, self._csvFieldNames, data)
