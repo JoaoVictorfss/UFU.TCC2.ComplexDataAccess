@@ -8,10 +8,11 @@ from infra.io.logs.LogInConsole import LogInConsole as Log
 NEO4J_SGBD = "Neo4j"
 POSTGRESQL_SGBD = "PostgreSql"
 DATA_LOAD_TEST = "Data Load"
+BRAZIL_DATE_FORMAT = "%Y/%m/%d %H:%M"
 class TestsHandler:
     def __init__(self, settings):
         self._settings = settings
-        self._csvFieldNames = ["SGBD", "Test Type", "Start At", "End At", "Executation Time"]
+        self._csvFieldNames = ["SGBD", "Test Type", "Start At", "End At", "Executation Time(MS)"]
         self._csvFileBasePath = settings.results_base_path
         self._pgDatabase = PostgreSqlDatabase()
         self._neo4jDatabase = Neo4jDatabase()
@@ -32,18 +33,18 @@ class TestsHandler:
         
     def endTests(self):
         self._pgDatabase.close()
-        self._neo4jDatabase.close()
+        # self._neo4jDatabase.close()
     
     def _executePgDataLoadTest(self, records):
         try:
             Log.information("[TestsHandler executePgDataLoadTest] Try to run pg data load test")
 
-            startAt = datetime.utcnow()
+            startAt = datetime.now()
             
             for record in records:
                 self._pgDatabase.setRecords(record)
                 
-            endAt = datetime.utcnow()
+            endAt = datetime.now()
             
             self._logInCsvFile(POSTGRESQL_SGBD, DATA_LOAD_TEST, startAt, endAt)
             
@@ -56,12 +57,12 @@ class TestsHandler:
         try:
             Log.information("[TestsHandler executeNeo4jDataLoadTest] Try to run Neo4j data load test")
 
-            startAt = datetime.utcnow()
+            startAt = datetime.now()
 
             for record in records:
                 self._neo4jDatabase.setRecords(record)
 
-            endAt = datetime.utcnow()
+            endAt = datetime.now()
 
             self._logInCsvFile(NEO4J_SGBD, DATA_LOAD_TEST, startAt, endAt)
             
@@ -70,12 +71,13 @@ class TestsHandler:
             Log.error(f"[TestsHandler executePgDataLoadTest] - An error occurred while trying to execute pg data load test ~ Error: {error}")
     
     def _logInCsvFile(self, sgbd, testType, startAt, endAt):
-        fileName = f"{self._csvFileBasePath}/{sgbd.lower()}/{testType.lower()}.csv"
+        fileName = testType.lower().replace(" ", "_")
+        filePath = f"{self._csvFileBasePath}/{sgbd.lower()}/{fileName}.csv"
         data = [{
             "SGBD": sgbd,
             "Test Type": testType,
-            "Start At": startAt,
-            "End At": endAt,
-            "Executation Time": startAt - endAt
+            "Start At": startAt.strftime(BRAZIL_DATE_FORMAT),
+            "End At": endAt.strftime(BRAZIL_DATE_FORMAT),
+            "Executation Time(MS)": (endAt - startAt).total_seconds() * 1000
         }]
-        LogInCsvFile.write(fileName, self._csvFieldNames, data)
+        LogInCsvFile.write(filePath, self._csvFieldNames, data)
