@@ -5,7 +5,7 @@ class Neo4jScripts:
   CREATE_INDEX_PATENT_REGISTERED_DATE = "CREATE INDEX IF NOT EXISTS ON :patent(registered_at)"
   CREATE_CONSTRAINT_PATENT_ID = "CREATE CONSTRAINT patents IF NOT EXISTS ON (p:patent) ASSERT p.patent_id IS UNIQUE"
   FIND_PATENT_BY_ID = "MATCH (p:patent {patent_id: $patent_id}) RETURN p"
-  CREATE_RELATIONSHIP_BETWEEN_NODES = """
+  CREATE_NODES_AND_RELATIONSHIP = """
                       UNWIND $rows AS row
                       MERGE (p:patent {patent_id: row.patentId})
                       ON CREATE SET p += {

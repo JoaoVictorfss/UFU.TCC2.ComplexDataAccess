@@ -1,10 +1,9 @@
-from domain.config.Settings import Settings
-from adapters.Neo4jAdpater import Neo4jAdpater
-from scripts.Neo4jScripts import Neo4jScripts
-
+from infra.databases.adapters.Neo4jAdpater import Neo4jAdpater
+from infra.databases.scripts.Neo4jScripts import Neo4jScripts
+    
 class Neo4jDatabase:
-    def init(self):
-        self.__neo4jAdapter = Neo4jAdpater(Settings.DB_NEO4J_URI, Settings.DB_NEO4J_USER, Settings.DB_NEO4J_PASSWORD)
+    def init(self, settings):
+        self.__neo4jAdapter = Neo4jAdpater(settings.neo4j_uri, settings.neo4j_user, settings.neo4j_password)
         commands = (
             Neo4jScripts.CREATE_INDEX_PATENT_ID,
             Neo4jScripts.CREATE_INDEX_PATENT_AUTHOR,
@@ -22,8 +21,7 @@ class Neo4jDatabase:
             'registeredAt': record[3],
             'relatedPatentId': record[4]
         }, records))
-        self.__neo4jAdapter.executeTransaction(
-            Neo4jScripts.CREATE_RELATIONSHIP_BETWEEN_NODES, rows)
+        self.__neo4jAdapter.executeTransaction(Neo4jScripts.CREATE_NODES_AND_RELATIONSHIP, rows)
                     
     def close(self): 
         self.__neo4jAdapter.closeConnection()

@@ -9,15 +9,16 @@ POSTGRESQL_SGBD = "PostgreSql"
 DATA_LOAD_TEST = "Data Load"
 
 class TestsHandler:
-    def __init__(self, resultsFilePath):
+    def __init__(self, settings):
+        self._settings = settings
         self._csvFieldNames = ["SGBD", "Test Type", "Start At", "End At", "Executation Time"]
-        self._csvFilePath = f"{resultsFilePath}/metrics.csv"
+        self._csvFileBasePath = settings.results_base_path
         self._pgDatabase = PostgreSqlDatabase()
         self._neo4jDatabase = Neo4jDatabase()
     
     def startTests(self):
-        self._pgDatabase.init()
-        self._neo4jDatabase.init()
+        self._pgDatabase.init(self._settings)
+        self._neo4jDatabase.init(self._settings)
  
     def executeDataLoadTest(self, records):
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -52,6 +53,7 @@ class TestsHandler:
         self._logInCsvFile(NEO4J_SGBD, DATA_LOAD_TEST, startAt, endAt)
     
     def _logInCsvFile(self, sgbd, testType, startAt, endAt):
+        file = f"{self._csvFileBasePath}/{sgbd.lower()}/{testType.lower()}.csv"
         data = [{
             "SGBD": sgbd,
             "Test Type": testType,
@@ -59,4 +61,4 @@ class TestsHandler:
             "End At": endAt,
             "Executation Time": startAt - endAt
         }]
-        LogInCsvFile.write(self._csvFilePath, self._csvFieldNames, data)
+        LogInCsvFile.write(file, self._csvFieldNames, data)

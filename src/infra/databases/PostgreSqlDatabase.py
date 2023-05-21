@@ -1,10 +1,9 @@
-from domain.config.Settings import Settings
-from adapters.PgAdapter import PgAdapter
-from scripts.PostgreSqlScripts import PostgreSqlScripts
+from infra.databases.adapters.PgAdapter import PgAdapter
+from infra.databases.scripts.PostgreSqlScripts import PostgreSqlScripts
 
 class PostgreSqlDatabase:
-    def init(self):
-        self.__pgAdapter = PgAdapter(Settings.DB_POSTGRESQL_CONN_STR)
+    def init(self, settings):
+        self.__pgAdapter = PgAdapter(settings.postgresql_conn_str)
         commands = (
             PostgreSqlScripts.CREATE_TABLE_PATENT,
             PostgreSqlScripts.CREATE_TABLE_CITATION,
