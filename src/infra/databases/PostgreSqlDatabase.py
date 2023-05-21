@@ -1,6 +1,5 @@
 from infra.databases.adapters.PgAdapter import PgAdapter
 from infra.databases.scripts.PostgreSqlScripts import PostgreSqlScripts
-
 class PostgreSqlDatabase:
     def init(self, settings):
         self.__pgAdapter = PgAdapter(settings.postgresql_conn_str)
