@@ -3,11 +3,11 @@ from datetime import datetime
 from infra.databases.PostgreSqlDatabase import PostgreSqlDatabase
 from infra.databases.Neo4jDatabase import Neo4jDatabase
 from infra.io.logs.LogInCsvFile import LogInCsvFile
+from infra.io.logs.LogInConsole import LogInConsole as Log
 
 NEO4J_SGBD = "Neo4j"
 POSTGRESQL_SGBD = "PostgreSql"
 DATA_LOAD_TEST = "Data Load"
-
 class TestsHandler:
     def __init__(self, settings):
         self._settings = settings
@@ -17,9 +17,11 @@ class TestsHandler:
         self._neo4jDatabase = Neo4jDatabase()
     
     def startTests(self):
+        Log.information("[TestsHandler] Try to run tests")
         self._pgDatabase.init(self._settings)
         #self._neo4jDatabase.init(self._settings)
- 
+        Log.information("[TestsHandler] Tests run successfully")
+
     def executeDataLoadTest(self, records):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_pg = executor.submit(self._executePgDataLoadTest, records)
@@ -33,24 +35,39 @@ class TestsHandler:
         self._neo4jDatabase.close()
     
     def _executePgDataLoadTest(self, records):
-        startAt = datetime.utcnow()
-        
-        for record in records:
-            self._pgDatabase.setRecords(record)
+        try:
+            Log.information("[TestsHandler executePgDataLoadTest] Try to run pg data load test")
+
+            startAt = datetime.utcnow()
             
-        endAt = datetime.utcnow()
-        
-        self._logInCsvFile(POSTGRESQL_SGBD, DATA_LOAD_TEST, startAt, endAt)
+            for record in records:
+                self._pgDatabase.setRecords(record)
+                
+            endAt = datetime.utcnow()
+            
+            self._logInCsvFile(POSTGRESQL_SGBD, DATA_LOAD_TEST, startAt, endAt)
+            
+            Log.information("[TestsHandler executePgDataLoadTest] PG data load test run successfully")
+        except Exception as error:
+            Log.error(f"[TestsHandler executePgDataLoadTest] - An error occurred while trying to execute pg data load test ~ Error: {error}")
+
     
     def _executeNeo4jDataLoadTest(self, records):
-        startAt = datetime.utcnow()
-        
-        for record in records:
-            self._neo4jDatabase.setRecords(record)
+        try:
+            Log.information("[TestsHandler executeNeo4jDataLoadTest] Try to run Neo4j data load test")
+
+            startAt = datetime.utcnow()
+
+            for record in records:
+                self._neo4jDatabase.setRecords(record)
+
+            endAt = datetime.utcnow()
+
+            self._logInCsvFile(NEO4J_SGBD, DATA_LOAD_TEST, startAt, endAt)
             
-        endAt = datetime.utcnow()
-        
-        self._logInCsvFile(NEO4J_SGBD, DATA_LOAD_TEST, startAt, endAt)
+            Log.information("[TestsHandler executeNeo4jDataLoadTest] Neo4j data load test run successfully")
+        except Exception as error:
+            Log.error(f"[TestsHandler executePgDataLoadTest] - An error occurred while trying to execute pg data load test ~ Error: {error}")
     
     def _logInCsvFile(self, sgbd, testType, startAt, endAt):
         fileName = f"{self._csvFileBasePath}/{sgbd.lower()}/{testType.lower()}.csv"
