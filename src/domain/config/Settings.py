@@ -60,5 +60,9 @@ class Settings:
         return self.data_config['max']
 
     @property
+    def traversal_patent_id(self):
+        return self.data_config['traversal']['patentId']
+    
+    @property
     def results_base_path(self):
         return self.results_config['basePath']

@@ -8,6 +8,7 @@ from infra.io.logs.LogInConsole import LogInConsole as Log
 NEO4J_SGBD = "Neo4j"
 POSTGRESQL_SGBD = "PostgreSql"
 DATA_LOAD_TEST = "Data Load"
+TRAVERSAL_TEST = "Traversal"
 BRAZIL_DATE_FORMAT = "%Y/%m/%d %H:%M"
 class TestsHandler:
     def __init__(self, settings):
@@ -26,18 +27,44 @@ class TestsHandler:
     def executeDataLoadTest(self, records):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_pg = executor.submit(self._executePgDataLoadTest, records)
+            future_pg = executor.submit(self._executePgDataLoadTest, records)
+
             #future_neo4j = executor.submit(self._executeNeo4jDataLoadTest, records)
 
             future_pg.result()
             #future_neo4j.result()
-        
+
+    def executePatentTraversalTest(self, patentId):
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_pg = executor.submit(self._executePgPatentTraversalTest, patentId)
+            #future_neo4j = executor.submit(self._executeNeo4jDataLoadTest, records)
+
+            future_pg.result()
+            #future_neo4j.result()
+            
     def endTests(self):
         self._pgDatabase.close()
         # self._neo4jDatabase.close()
     
+    def _executePgPatentTraversalTest(self, patentId):
+        try:
+            Log.information("[TestsHandler executePgPatentTraversalTest] Try to run pg patent traversal test")
+
+            startAt = datetime.now()
+            
+            self._pgDatabase.getReferencingPatents(patentId)
+                
+            endAt = datetime.now()
+            
+            self._logInCsvFile(POSTGRESQL_SGBD, TRAVERSAL_TEST, startAt, endAt)
+            
+            Log.information("[TestsHandler executePgPatentTraversalTest] PG patent traversal test run successfully")
+        except Exception as error:
+            Log.error(f"[TestsHandler executePgPatentTraversalTest] - An error occurred while trying to execute pg patent traversal test ~ Error: {error}")
+
     def _executePgDataLoadTest(self, records):
         try:
-            Log.information("[TestsHandler executePgDataLoadTest] Try to run pg data load test")
+            Log.information("[TestsHandler executePgDataLoadTest] Try to run pg patent traversal test")
 
             startAt = datetime.now()
             
@@ -51,7 +78,6 @@ class TestsHandler:
             Log.information("[TestsHandler executePgDataLoadTest] PG data load test run successfully")
         except Exception as error:
             Log.error(f"[TestsHandler executePgDataLoadTest] - An error occurred while trying to execute pg data load test ~ Error: {error}")
-
     
     def _executeNeo4jDataLoadTest(self, records):
         try:

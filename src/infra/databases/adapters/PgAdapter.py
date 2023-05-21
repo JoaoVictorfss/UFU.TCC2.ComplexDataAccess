@@ -33,20 +33,20 @@ class PgAdapter:
     finally:
         cur.close()
         
-  def executeDql(self, cmd, params=None): 
-    results = None
-    
+  def executeDql(self, cmd, params=None):     
     try:
       Log.debug(f"[PgAdapter executeDql] - Try to execute dql {cmd} with params {params}")
       cur = self.__conn.cursor()
       cur.execute(cmd, params)
       results = cur.fetchall()
+      Log.debug(f"[PgAdapter executeDql] - {len(results)} records found")
       Log.information(f"[PgAdapter executeDql] - The dql was executed successfully")
+      return results
     except psycopg2.Error as error:
       Log.error(f"[PgAdapter executeDql] - An error occurred while trying to execute dql ~ Error: {error}")
+      return None
     finally:
-        cur.close()     
-        return results
+        cur.close() 
 
   def closeConnection(self):
       self.__conn.close()

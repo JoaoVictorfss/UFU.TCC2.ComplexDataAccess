@@ -33,6 +33,7 @@ def main():
   testsHandler = TestsHandler(settings)
   testsHandler.startTests() 
   testsHandler.executeDataLoadTest(records)
+  testsHandler.executePatentTraversalTest(settings.traversal_patent_id)
   testsHandler.endTests()
 
 main()

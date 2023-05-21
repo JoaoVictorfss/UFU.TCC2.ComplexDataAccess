@@ -6,6 +6,8 @@ db:
     user: ''
     password: ''
 data:
+  traversal:
+    patentId: ''
   fake:
     authorsTotal: 10
     classificationsTotal: 10

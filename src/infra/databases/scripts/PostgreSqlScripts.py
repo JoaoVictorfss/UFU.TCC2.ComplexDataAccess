@@ -28,3 +28,9 @@ class PostgreSqlScripts:
                        """
   INSERT_INTO_CITATION = "INSERT INTO citation (from_id, to_id) VALUES(%s,%s)"
   FIND_PATENT_BY_ID = "SELECT * FROM patent WHERE patent_id = %s"
+  GET_REFERENCING_PATENTS = """
+                                SELECT p.*
+                                FROM citation c
+                                JOIN patent p ON c.to_id = p.patent_id
+                                WHERE c.from_id = %s
+                            """
