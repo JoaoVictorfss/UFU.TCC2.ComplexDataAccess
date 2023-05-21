@@ -18,15 +18,15 @@ class TestsHandler:
     
     def startTests(self):
         self._pgDatabase.init(self._settings)
-        self._neo4jDatabase.init(self._settings)
+        #self._neo4jDatabase.init(self._settings)
  
     def executeDataLoadTest(self, records):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_pg = executor.submit(self._executePgDataLoadTest, records)
-            future_neo4j = executor.submit(self._executeNeo4jDataLoadTest, records)
+            #future_neo4j = executor.submit(self._executeNeo4jDataLoadTest, records)
 
             future_pg.result()
-            future_neo4j.result()
+            #future_neo4j.result()
         
     def endTests(self):
         self._pgDatabase.close()

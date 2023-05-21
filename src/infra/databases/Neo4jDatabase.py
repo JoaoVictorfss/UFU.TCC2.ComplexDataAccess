@@ -4,13 +4,13 @@ from infra.databases.scripts.Neo4jScripts import Neo4jScripts
 class Neo4jDatabase:
     def init(self, settings):
         self.__neo4jAdapter = Neo4jAdpater(settings.neo4j_uri, settings.neo4j_user, settings.neo4j_password)
-        commands = (
+        commands = [
             Neo4jScripts.CREATE_INDEX_PATENT_ID,
             Neo4jScripts.CREATE_INDEX_PATENT_AUTHOR,
             Neo4jScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
             Neo4jScripts.CREATE_INDEX_PATENT_REGISTERED_DATE,
             Neo4jScripts.CREATE_CONSTRAINT_PATENT_ID
-        )
+        ]
         self.__neo4jAdapter.executeQueries(commands)
         
     def setRecords(self, records):
