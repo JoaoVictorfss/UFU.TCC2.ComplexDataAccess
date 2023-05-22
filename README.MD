@@ -1,4 +1,4 @@
-# Data Access Test Application
+# Complex Data Access Test Application
 
 ## Overview
 This application aims to automate complex data access tests between Neo4j and PostgreSQL DBMSs and return the results. It provides a streamlined process for setting up the databases, generating fake data, establishing relationships, and executing performance tests.
