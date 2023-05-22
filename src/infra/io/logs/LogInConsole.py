@@ -12,7 +12,7 @@ class LogInConsole:
   @staticmethod
   def debug(message):
     datetimeStr = datetime.now().strftime(BRAZIL_DATE_FORMAT)
-    print(f"\033[94m{datetimeStr} {message}\033[0m\n")
+    print(f"\033[37m{datetimeStr} {message}\033[0m\n")
   
   @staticmethod
   def error(message):
