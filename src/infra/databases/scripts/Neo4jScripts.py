@@ -22,7 +22,7 @@ class Neo4jScripts:
     MATCH (p:patent {patent_id: $patent_id })-[:CITED_BY*1..]->(relatedP)
     RETURN relatedP
   """
-  GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTER_DATE = """
+  GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTRATION_DATE = """
     MATCH(p: patent)-[:CITED_BY*1..] -> (relatedP)
     WHERE p.author = $author AND p.registered_at >= $registered_at
     RETURN relatedP

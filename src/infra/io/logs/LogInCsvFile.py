@@ -1,5 +1,7 @@
 import csv
 import os
+
+#Log class for csv file
 class LogInCsvFile:     
   @staticmethod
   def write(file, fieldnames, rows):

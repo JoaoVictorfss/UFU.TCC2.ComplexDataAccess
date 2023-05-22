@@ -1,6 +1,8 @@
 from datetime import datetime
 
 BRAZIL_DATE_FORMAT = "%Y/%m/%d %H:%M"
+
+#Log class for console
 class LogInConsole:
   @staticmethod
   def information(message):

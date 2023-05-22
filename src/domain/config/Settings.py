@@ -1,4 +1,6 @@
 import yaml
+
+# Configuration class to retrieve all data of the settings.yml
 class Settings:
     def __init__(self, config_file):
         self.config = self.load_config(config_file)
@@ -10,6 +12,7 @@ class Settings:
     def load_config(self, config_file):
         with open(config_file, 'r') as file:
             config = yaml.safe_load(file)
+            
         return config
 
     @property

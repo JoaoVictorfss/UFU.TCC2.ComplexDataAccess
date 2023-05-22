@@ -2,7 +2,9 @@ from faker import Faker
 import random
 from datetime import datetime
 
+#Fake's Data Generator
 class FakerUtils:
+    #Generates unique first names
     @staticmethod
     def generateUniqueFirstNames(count):
         firstNames = set()
@@ -15,10 +17,12 @@ class FakerUtils:
             firstNames.add(firstName)
                    
         return list(firstNames)
-    
+
+    #Generates US patent's classifications  
     @staticmethod      
     def generateUsPatentClassifications(count):
-        classifications = []      
+        classifications = [] 
+             
         for _ in range(count):
             section = chr(random.randint(65, 72))  
             subclass = random.randint(1, 99)
@@ -29,6 +33,7 @@ class FakerUtils:
             
         return classifications
     
+    #Generates datetimes between an start date and end date 
     @staticmethod      
     def generateDateTimes(startDate, endDate, count):
         datetimes = []      

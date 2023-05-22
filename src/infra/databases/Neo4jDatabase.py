@@ -1,7 +1,10 @@
 from infra.databases.adapters.Neo4jAdpater import Neo4jAdpater
 from infra.databases.scripts.Neo4jScripts import Neo4jScripts
 from datetime import datetime
+
+#Neo4j Database Manager
 class Neo4jDatabase:
+    #Creates the database structure
     def init(self, settings):
         self.__neo4jAdapter = Neo4jAdpater(settings.neo4j_uri, settings.neo4j_user, settings.neo4j_password)
         commands = [
@@ -11,7 +14,8 @@ class Neo4jDatabase:
             Neo4jScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
         ]
         self.__neo4jAdapter.executeQueries(commands)
-        
+       
+    #Creates patent's nodes and relationships
     def setRecords(self, records):
         rows = list(map(lambda record: {
             'patentId': record[0],
@@ -22,12 +26,15 @@ class Neo4jDatabase:
         }, records))
         self.__neo4jAdapter.executeTransaction(Neo4jScripts.CREATE_NODES_AND_RELATIONSHIP, rows)
 
+    #Gets all patents that cite a specific one by id 
     def getPatentCitationsById(self, patentId):
         self.__neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_CITATIONS_BY_ID, {"patent_id": patentId})
 
-    def getPatentCitationsByAuthorAndRegisterDate(self, author, date):
-        self.__neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTER_DATE, {"author": author, "registered_at": date})
+    #Gets all patents that cite an author's patents on a given registration date
+    def getPatentCitationsByAuthorAndRegistrationDate(self, author, date):
+        self.__neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTRATION_DATE, {"author": author, "registered_at": date})
     
+    #Close driver's connection
     def close(self): 
         self.__neo4jAdapter.closeConnection()
  
