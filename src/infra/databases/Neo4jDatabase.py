@@ -7,13 +7,14 @@ class Neo4jDatabase:
     #Creates the database structure
     def init(self, settings):
         self.__neo4jAdapter = Neo4jAdpater(settings.neo4j_uri, settings.neo4j_user, settings.neo4j_password)
-        commands = [
-            Neo4jScripts.CREATE_INDEX_PATENT_ID,
-            Neo4jScripts.CREATE_INDEX_PATENT_AUTHOR,
-            Neo4jScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
-            Neo4jScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
-        ]
-        self.__neo4jAdapter.executeQueries(commands)
+        if(settings.tests_configure_db_enabled):
+            commands = [
+                Neo4jScripts.CREATE_INDEX_PATENT_ID,
+                Neo4jScripts.CREATE_INDEX_PATENT_AUTHOR,
+                Neo4jScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
+                Neo4jScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
+            ]
+            self.__neo4jAdapter.executeQueries(commands)
        
     #Creates patent's nodes and relationships
     def setRecords(self, records):

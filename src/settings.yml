@@ -6,7 +6,12 @@ db:
     user: 'neo4j'
     password: ''
 tests:
+  configureDb:
+    enabled: true
+  dataLoad:
+    enabled: true
   traversal:
+    enabled: true
     filters:
       patentId: '3858241'
       author: 'Paul'

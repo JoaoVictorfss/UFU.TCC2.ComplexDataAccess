@@ -78,3 +78,15 @@ class Settings:
     @property
     def tests_traversal_filters_register_date(self):
         return self.tests_config['traversal']['filters']['registerDate']
+ 
+    @property
+    def tests_traversal_enabled(self):
+        return self.tests_config['traversal']['enabled'] 
+    
+    @property
+    def tests_configure_db_enabled(self):
+        return self.tests_config['configureDb']['enabled'] 
+    
+    @property
+    def tests_data_load_enabled(self):
+        return self.tests_config['dataLoad']['enabled']

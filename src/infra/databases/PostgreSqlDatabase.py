@@ -6,15 +6,16 @@ class PostgreSqlDatabase:
     #Creates the database structure
     def init(self, settings):
         self.__pgAdapter = PgAdapter(settings.postgresql_conn_str)
-        commands = [
-            PostgreSqlScripts.CREATE_TABLE_PATENT,
-            PostgreSqlScripts.CREATE_TABLE_CITATION,
-            PostgreSqlScripts.CREATE_INDEX_PATENT_ID,
-            PostgreSqlScripts.CREATE_INDEX_PATENT_AUTHOR,
-            PostgreSqlScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
-            PostgreSqlScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
-        ]
-        self.__pgAdapter.executeDdls(commands)
+        if(settings.tests_configure_db_enabled):
+            commands = [
+                PostgreSqlScripts.CREATE_TABLE_PATENT,
+                PostgreSqlScripts.CREATE_TABLE_CITATION,
+                PostgreSqlScripts.CREATE_INDEX_PATENT_ID,
+                PostgreSqlScripts.CREATE_INDEX_PATENT_AUTHOR,
+                PostgreSqlScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
+                PostgreSqlScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
+            ]
+            self.__pgAdapter.executeDdls(commands)
     
     #Insert into patent and citation tables
     def setRecords(self, records):

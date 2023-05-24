@@ -37,9 +37,11 @@ def main():
   testsHandler.startTests() 
   
   #Executes tests
-  testsHandler.executeDataLoadTest(records)
-  testsHandler.executePatentCitationsTraversalTest()
-  testsHandler.executeAuthorPatentCitationsTraversalTest()
+  if(settings.tests_data_load_enabled):
+    testsHandler.executeDataLoadTest(records)
+  if(settings.tests_traversal_enabled):
+    testsHandler.executePatentCitationsTraversalTest()
+    testsHandler.executeAuthorPatentCitationsTraversalTest()
   
   #End tests
   testsHandler.endTests()
