@@ -17,7 +17,7 @@ class Settings:
 
     @property
     def postgresql_conn_str(self):
-        return self.db_config['postgresql']['conn_str']
+        return self.db_config['postgresql']['connStr']
 
     @property
     def neo4j_uri(self):
@@ -45,11 +45,11 @@ class Settings:
     
     @property
     def dataset_start_date(self):
-        return self.data_config['dataset']['start_date']
+        return self.data_config['dataset']['startDate']
 
     @property
     def dataset_end_date(self):
-        return self.data_config['dataset']['end_date']
+        return self.data_config['dataset']['endDate']
 
     @property
     def dataset_total(self):

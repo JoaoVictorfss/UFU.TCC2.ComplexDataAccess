@@ -30,30 +30,21 @@ class TestsHandler:
         
     #Executes the data load test for PostgreSql and Neo4j in parallel
     def executeDataLoadTest(self, records):
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_pg = executor.submit(self._executePgDataLoadTest, records)
-            future_neo4j = executor.submit(self._executeNeo4jDataLoadTest, records)
-            future_pg.result()
-            future_neo4j.result()
+        self._executePgDataLoadTest(records)
+        self._executeNeo4jDataLoadTest(records)
 
     #Executes the traversal test, with patent's id filter, for PostgreSql and Neo4j in parallel
     def executePatentCitationsTraversalTest(self):
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_pg = executor.submit(self._executePgPatentCitationsTraversalTest, self._settings.tests_traversal_filters_patent_id)
-            future_neo4j = executor.submit(self._executeNeo4jPatentCitationsTraversalTest, self._settings.tests_traversal_filters_patent_id)
-            future_pg.result()
-            future_neo4j.result()
+            self._executePgPatentCitationsTraversalTest(self._settings.tests_traversal_filters_patent_id)
+            self._executeNeo4jPatentCitationsTraversalTest(self._settings.tests_traversal_filters_patent_id)
     
     #Executes the traversal test, with author and registration's date filters, for PostgreSql and Neo4j in parallel
     def executeAuthorPatentCitationsTraversalTest(self):        
         date = datetime.strptime(self._settings.tests_traversal_filters_register_date, "%Y-%m-%d").date()
         author = self._settings.tests_traversal_filters_author
         
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future_pg = executor.submit(self._executePgAuthorPatentCitationsTraversalTest, author, date)
-            future_neo4j = executor.submit(self._executeNeo4jAuthorPatentCitationsTraversalTest, author, date)
-            future_pg.result()
-            future_neo4j.result()
+        self._executePgAuthorPatentCitationsTraversalTest(author, date)
+        self._executeNeo4jAuthorPatentCitationsTraversalTest(author, date)
      
     #Finishes the tests and close driver's connections   
     def endTests(self):
