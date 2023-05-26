@@ -119,7 +119,7 @@ class TestsHandler:
             self._neo4jDatabase.getPatentCitationsById(patentId)
             endAt = datetime.now()
 
-            self._logInCsvFile(NEO4J_SGBD, f"{TRAVERSAL_TEST}-{PATENT_CITATIONS}", startAt, endAt)
+            self._logInCsvFile(NEO4J_SGBD, f"{TRAVERSAL_TEST}: {PATENT_CITATIONS}", startAt, endAt)
             Log.information("[TestsHandler executeNeo4jPatentCitationsTraversalTest] Neo4j patent traversal test run successfully")
         except Exception as error:
             Log.error(f"[TestsHandler executeNeo4jPatentCitationsTraversalTest] - An error occurred while trying to execute neo4j patent traversal test ~ Error: {error}")
@@ -133,7 +133,7 @@ class TestsHandler:
             self._neo4jDatabase.getPatentCitationsByAuthorAndRegistrationDate(author, date)
             endAt = datetime.now()
 
-            self._logInCsvFile(NEO4J_SGBD, f"{TRAVERSAL_TEST}-{AUTHOR_PATENT_CITATIONS}", startAt, endAt)
+            self._logInCsvFile(NEO4J_SGBD, f"{TRAVERSAL_TEST}: {AUTHOR_PATENT_CITATIONS}", startAt, endAt)
             Log.information("[TestsHandler executeNeo4jAuthorPatentCitationsTraversalTest] Neo4j patent traversal test run successfully")
         except Exception as error:
             Log.error(f"[TestsHandler executeNeo4jAuthorPatentCitationsTraversalTest] - An error occurred while trying to execute neo4j patent traversal test ~ Error: {error}")
@@ -145,8 +145,6 @@ class TestsHandler:
             
     #Log test's results in csv file
     def _logInCsvFile(self, sgbd, testType, startAt, endAt):
-        fileName = testType.lower().replace(" ", "_").replace("-", "_")
-        filePath = f"{self._csvFileBasePath}/{sgbd.lower()}/{fileName}.csv"
         data = [{
             "SGBD": sgbd,
             "Test Type": testType,
@@ -154,4 +152,4 @@ class TestsHandler:
             "End At": endAt.strftime(BRAZIL_DATE_FORMAT),
             "Executation Time(MS)": (endAt - startAt).total_seconds() * 1000
         }]
-        LogInCsvFile.write(filePath, self._csvFieldNames, data)
+        LogInCsvFile.write(f"{self._csvFileBasePath}/metrics.csv", self._csvFieldNames, data)

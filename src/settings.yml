@@ -1,16 +1,16 @@
 db:
   postgresql:
-    connStr: ''
+    connStr: 'postgres://bibhbgwi:ANb3vUUo213tKtNuYC7V812F8-Zdc0gQ@horton.db.elephantsql.com/bibhbgwi'
   neo4j:
     uri: 'neo4j+s://b169bf9c.databases.neo4j.io'
     user: 'neo4j'
-    password: ''
+    password: 'dE3ikBb4Z5X9V2lklFTq5FBAHLn_OvY6RH30cxkZQPg'
 tests:
   configureDb:
     enabled: true
   dataLoad:
     enabled: true
-    threadsMax: 100
+    threadsMax: 10
   traversal:
     enabled: true
     filters:
@@ -27,6 +27,6 @@ data:
     endDate: '1999-12-31 00:00:00'
     total: 17
     filePath: domain/dataset/snap/stanford/cit-Patents.txt
-  max: 600
+  max: 10
 results:
   basePath: tests/results
