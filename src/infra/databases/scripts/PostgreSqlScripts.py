@@ -37,14 +37,14 @@ class PostgreSqlScripts:
   GET_PATENT_CITATIONS_BY_ID = """
       SELECT p.*
       FROM citation c
-      INNER JOIN patent p ON c.to_id = p.patent_id
-      WHERE c.from_id = %s
+      INNER JOIN patent p ON c.from_id = p.patent_id
+      WHERE c.to_id = %s
   """
   GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTRATION_DATE = """
       SELECT p.*
       FROM citation c
-      INNER JOIN patent p ON c.to_id = p.patent_id
-      WHERE c.from_id IN (
+      INNER JOIN patent p ON c.from_id = p.patent_id
+      WHERE c.to_id IN (
           SELECT patent_id
           FROM patent
           WHERE author = %s
