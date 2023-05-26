@@ -90,3 +90,7 @@ class Settings:
     @property
     def tests_data_load_enabled(self):
         return self.tests_config['dataLoad']['enabled']
+    
+    @property
+    def tests_data_load_threads_max(self):
+        return self.tests_config['dataLoad']['threadsMax']

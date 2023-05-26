@@ -68,11 +68,8 @@ class TestsHandler:
         try:
             Log.information("[TestsHandler executePgDataLoadTest] Try to run pg patent traversal test")
 
-            startAt = datetime.now()
-                     
-            for record in records:
-                self._pgDatabase.setRecords(record)
-                
+            startAt = datetime.now()           
+            self._executeUsingMultithread(self._pgDatabase.setRecords, records, self._settings.tests_data_load_threads_max)                  
             endAt = datetime.now()          
             self._logInCsvFile(POSTGRESQL_SGBD, DATA_LOAD_TEST, startAt, endAt)
             
@@ -114,10 +111,7 @@ class TestsHandler:
             Log.information("[TestsHandler executeNeo4jDataLoadTest] Try to run neo4j data load test")
             
             startAt = datetime.now()
-
-            for record in records:
-                self._neo4jDatabase.setRecords(record)
-
+            self._executeUsingMultithread(self._neo4jDatabase.setRecords, records, self._settings.tests_data_load_threads_max)      
             endAt = datetime.now()
             
             self._logInCsvFile(NEO4J_SGBD, DATA_LOAD_TEST, startAt, endAt)  
@@ -153,6 +147,11 @@ class TestsHandler:
         except Exception as error:
             Log.error(f"[TestsHandler executeNeo4jAuthorPatentCitationsTraversalTest] - An error occurred while trying to execute neo4j patent traversal test ~ Error: {error}")
     
+    #Executes a function using multithread
+    def _executeUsingMultithread(self, func, data, maxWorkers):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=maxWorkers) as executor:
+            executor.map(func, data)
+            
     #Log test's results in csv file
     def _logInCsvFile(self, sgbd, testType, startAt, endAt):
         fileName = testType.lower().replace(" ", "_").replace("-", "_")
