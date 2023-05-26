@@ -15,15 +15,12 @@ class Neo4jScripts:
     WITH p, row
     WHERE row.toNodeId IS NOT NULL
     MATCH (relatedP:patent {patent_id: row.toNodeId})
-    MERGE (p)-[:CITED_BY]->(relatedP)
+    MERGE (p)-[:CITE]->(relatedP)
     RETURN count(*) as total
   """
   GET_PATENT_CITATIONS_BY_ID = """
-    MATCH (p:patent {patent_id: $patent_id })-[:CITED_BY*1..]->(relatedP)
-    RETURN relatedP
+
   """
   GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTRATION_DATE = """
-    MATCH(p: patent)-[:CITED_BY*1..] -> (relatedP)
-    WHERE p.author = $author AND p.registered_at >= $registered_at
-    RETURN relatedP
+
   """
