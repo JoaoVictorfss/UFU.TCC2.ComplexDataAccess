@@ -6,8 +6,6 @@ from domain.config.Settings import Settings
 
 #Method to handle data pre processing
 def dataPreProcessing(settings):
-  mappedIds = {}
-
   #retrieves data from dataset file
   patentIdentifiers = FileHandler.retrieveData(settings.dataset_file_path)
   
@@ -15,10 +13,14 @@ def dataPreProcessing(settings):
   authors = FakerUtils.generateUniqueFirstNames(settings.fake_authors_total)
   classifications = FakerUtils.generateUsPatentClassifications(settings.fake_classifications_total)
   
+  records = [] 
+  mappedIds = {}
+  
   #Generates fake data for each patent's id in dataset file
   for i in range((settings.data_max - 1)):
-    fromNodeData = None
     ids = (patentIdentifiers[i][0]).split("\t")
+    fromNodeData = None
+    toNodeData = None
     
     if(ids[0] not in mappedIds):
       fromNodeRegistrationDate = FakerUtils.generateDateTime(settings.dataset_start_date, settings.dataset_end_date)
@@ -30,8 +32,12 @@ def dataPreProcessing(settings):
       toNodeRegistrationDate = FakerUtils.generateDateTime(fromNodeData[3], settings.dataset_end_date)
       toNodeData = (ids[1], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], toNodeRegistrationDate, None)
       mappedIds[ids[1]] = toNodeData
-      
-  return list(mappedIds.values())
+    else: toNodeData = mappedIds[ids[1]]
+    
+    if(fromNodeData != None and toNodeData != None):
+      records.append((fromNodeData, toNodeData))
+  
+  return records
 
 def getIndex(len):
   return RandomUtils.getRandomInt(len - 1)

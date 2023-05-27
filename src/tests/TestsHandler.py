@@ -43,33 +43,31 @@ class TestsHandler:
     
     #Executes pattern matching queries for PostgreSql and Neo4j
     def executeTestsWithPatternMatchingQueries(self):
-        self._getPatentCitationsOfTheSameClassificationFromPgDb()
-        self._getPatentCitationsOfTheSameClassificationFromNeo4jDb()
-    
+        self._executeQueryTest(self._pgDatabase.getPatentCitationsOfTheSameClassification, POSTGRESQL_SGBD, PATTERN_MATCHING_TEST, PATTERN_MATCHING_TEST)   
+        self._executeQueryTest(self._neo4jDatabase.getPatentCitationsOfTheSameClassification, NEO4J_SGBD, PATTERN_MATCHING_TEST, PATTERN_MATCHING_TEST)   
+
     #Executes aggregation queries for PostgreSql and Neo4j
     def executeTestsWithAggregationQueries(self):
-        self._getTop1000LatestPatentsStatisticsFromPgDb()
-        self._getTop1000LatestPatentsStatisticsFromNeo4jDb()
-        self._getPatentsCountPerClassificationFromPgDb() 
-        self._getPatentsCountPerClassificationFromNeo4jDb() 
+        self._executeQueryTest(self._pgDatabase.getTop1000LatestPatentsStatistics, POSTGRESQL_SGBD, AGGREGATION_TEST, LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION)   
+        self._executeQueryTest(self._neo4jDatabase.getTop1000LatestPatentsStatistics, NEO4J_SGBD, AGGREGATION_TEST, LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION)   
+        self._executeQueryTest(self._pgDatabase.getPatentsCountPerClassification, POSTGRESQL_SGBD, AGGREGATION_TEST, PATENTS_COUNT_BY_CLASSIFICATION_TEST_DESCRIPTION)   
+        self._executeQueryTest(self._neo4jDatabase.getPatentsCountPerClassification, NEO4J_SGBD, AGGREGATION_TEST, PATENTS_COUNT_BY_CLASSIFICATION_TEST_DESCRIPTION)   
 
     #Executes queries with traversal for PostgreSql and Neo4j
     def executeTestsWithTraversingQueries(self):
-        self._getPatentCitationsByIdFromPgDb(self._settings.tests_filters_patent_id)
-        self._getPatentCitationsByIdFromNeo4jDb(self._settings.tests_filters_patent_id)
+        self._executeQueryTest(self._pgDatabase.getPatentCitationsById, POSTGRESQL_SGBD, TRAVERSAL_TEST, PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
+        self._executeQueryTest(self._neo4jDatabase.getPatentCitationsById, NEO4J_SGBD, TRAVERSAL_TEST, PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
         
         date = datetime.strptime(self._settings.tests_filters_registration_date, "%Y-%m-%d").date()
-        author = self._settings.tests_filters_author 
-             
-        self._getPatentCitationsByAuthorAndRegistrationDateFromPgDb(author, date)
-        self._getPatentCitationsByAuthorAndRegistrationDateFromNeo4jDb(author, date)     
+        self._executeQueryTest(self._pgDatabase.getPatentCitationsByAuthorAndRegistrationDate, POSTGRESQL_SGBD, TRAVERSAL_TEST, AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_author, date)   
+        self._executeQueryTest(self._neo4jDatabase.getPatentCitationsByAuthorAndRegistrationDate, NEO4J_SGBD, TRAVERSAL_TEST, AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_author, date)   
  
     #Executes queries without traversal for PostgreSql and Neo4j
     def executeTestsWithoutTraversingQueries(self):
-        self._getPatentByIdFromPgDb()
-        self._getPatentByIdFromNeo4jDb()
-        self._getAuthorPatentsFromPgDb()
-        self._getAuthorPatentsFromNeo4jDb()
+        self._executeQueryTest(self._pgDatabase.getPatentById, POSTGRESQL_SGBD, NO_TRAVERSAL_TEST, PATENT_BY_ID_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
+        self._executeQueryTest(self._neo4jDatabase.getPatentById, NEO4J_SGBD, NO_TRAVERSAL_TEST, PATENT_BY_ID_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
+        self._executeQueryTest(self._pgDatabase.getAuthorPatents, POSTGRESQL_SGBD, NO_TRAVERSAL_TEST, AUTHOR_PATENTS_TEST_DESCRIPTION, self._settings.tests_filters_author)   
+        self._executeQueryTest(self._neo4jDatabase.getAuthorPatents, NEO4J_SGBD, NO_TRAVERSAL_TEST, AUTHOR_PATENTS_TEST_DESCRIPTION, self._settings.tests_filters_author)   
         
     #Finishes the tests and close driver's connections   
     def endTests(self):
@@ -92,105 +90,7 @@ class TestsHandler:
             Log.information("[TestsHandler executePgDataLoadTest] test run successfully")
         except Exception as error:
             Log.error(f"[TestsHandler executePgDataLoadTest] - an error occurred while trying to execute test ~ Error: {error}")
-            
-    #Gets patents that cite a specific one from pg db
-    def _getPatentCitationsByIdFromPgDb(self, patentId):
-        try:
-            Log.information("[TestsHandler getPatentCitationsByIdFromPgDb] try to run test")
 
-            startAt = datetime.now()         
-            result = self._pgDatabase.getPatentCitationsById(patentId)            
-            endAt = datetime.now()  
-            self._logInCsvFile(POSTGRESQL_SGBD, TRAVERSAL_TEST, startAt, endAt, PATENT_CITATIONS_TEST_DESCRIPTION, len(result))
-                    
-            Log.information("[TestsHandler getPatentCitationsByIdFromPgDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentCitationsByIdFromPgDb] - an error occurred while trying to execute test ~ Error: {error}")
-
-    #Gets patents that cite an author's patents from pg db
-    def _getPatentCitationsByAuthorAndRegistrationDateFromPgDb(self, author, date):
-        try:
-            Log.information("[TestsHandler getPatentCitationsByAuthorAndRegistrationDateFromPgDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._pgDatabase.getPatentCitationsByAuthorAndRegistrationDate(author, date)
-            endAt = datetime.now()
-            self._logInCsvFile(POSTGRESQL_SGBD, TRAVERSAL_TEST, startAt, endAt, AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION, len(result))
-            
-            Log.information("[TestsHandler getPatentCitationsByAuthorAndRegistrationDateFromPgDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentCitationsByAuthorAndRegistrationDateFromPgDb] - an error occurred while trying to execute test ~ Error: {error}")
-    
-    #Gets the number and percentage of citations made and received per patent of the 1000 most recent patents from pg db
-    def _getTop1000LatestPatentsStatisticsFromPgDb(self):
-        try:
-            Log.information("[TestsHandler getTop1000LatestPatentsStatisticsFromPgDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._pgDatabase.getTop1000LatestPatentsStatistics()
-            endAt = datetime.now()
-            self._logInCsvFile(POSTGRESQL_SGBD, AGGREGATION_TEST, startAt, endAt, LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION, len(result))
-           
-            Log.information("[TestsHandler getTop1000LatestPatentsStatisticsFromPgDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getTop1000LatestPatentsStatisticsFromPgDb] - an error occurred while trying to execute test ~ Error: {error}")
-    
-    #Gets patents count per classification from pg db
-    def _getPatentsCountPerClassificationFromPgDb(self):
-        try:
-            Log.information("[TestsHandler getPatentsCountPerClassificationFromPgDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._pgDatabase.getPatentsCountPerClassification()
-            endAt = datetime.now()
-            self._logInCsvFile(POSTGRESQL_SGBD, AGGREGATION_TEST, startAt, endAt, PATENTS_COUNT_BY_CLASSIFICATION_TEST_DESCRIPTION, len(result))
-            
-            Log.information("[TestsHandler getPatentsCountPerClassificationFromPgDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentsCountPerClassificationFromPgDb] - an error occurred while trying to execute test ~ Error: {error}")
-        
-    #Gets patent by id from pg db
-    def _getPatentByIdFromPgDb(self, patentId):
-        try:
-            Log.information("[TestsHandler getPatentByIdFromPgDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._pgDatabase.getPatentById(patentId)
-            endAt = datetime.now()
-            self._logInCsvFile(POSTGRESQL_SGBD, NO_TRAVERSAL_TEST, startAt, endAt, PATENT_BY_ID_TEST_DESCRIPTION, len(result))
-            
-            Log.information("[TestsHandler getPatentByIdFromPgDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentByIdFromPgDb] - an error occurred while trying to execute test ~ Error: {error}")
-    
-    #Gets author's patents from pg neo4j db
-    def _getAuthorPatentsFromPgDb(self, author):
-        try:
-            Log.information("[TestsHandler getAuthorPatentsFromPgDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._pgDatabase.getAuthorPatents(author)
-            endAt = datetime.now()
-            self._logInCsvFile(POSTGRESQL_SGBD, NO_TRAVERSAL_TEST, startAt, endAt, AUTHOR_PATENTS_TEST_DESCRIPTION, len(result))
-            
-            Log.information("[TestsHandler getAuthorPatentsFromPgDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getAuthorPatentsFromPgDb] - an error occurred while trying to execute test ~ Error: {error}")
-   
-    #Gets patents that cite patents of the same classification from pg db
-    def _getPatentCitationsOfTheSameClassificationFromPgDb(self):
-        try:
-            Log.information("[TestsHandler getPatentCitationsOfTheSameClassificationFromPgDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._pgDatabase.getPatentCitationsOfTheSameClassification()
-            endAt = datetime.now()
-            self._logInCsvFile(POSTGRESQL_SGBD, PATTERN_MATCHING_TEST, startAt, endAt, PATTERN_MATCHING_TEST, len(result))
-            
-            Log.information("[TestsHandler getPatentCitationsOfTheSameClassificationFromPgDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentCitationsOfTheSameClassificationFromPgDb] - an error occurred while trying to execute test ~ Error: {error}")
-      
     #Executes the data load test for Neo4j
     def _executeNeo4jDataLoadTest(self, records):
         try:
@@ -205,104 +105,20 @@ class TestsHandler:
         except Exception as error:
             Log.error(f"[TestsHandler executePgDataLoadTest] - an error occurred while trying to execute test ~ Error: {error}")
 
-    #Gets patents that cite a specific one from neo4j db
-    def _getPatentCitationsByIdFromNeo4jDb(self, patentId):
+    def _executeQueryTest(self, testFunc, sgbd, testType, description, *params):
         try:
-            Log.information("[TestsHandler getPatentCitationsByIdFromNeo4jDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._neo4jDatabase.getPatentCitationsById(patentId)
-            endAt = datetime.now()
-            self._logInCsvFile(NEO4J_SGBD, TRAVERSAL_TEST, startAt, endAt, PATENT_CITATIONS_TEST_DESCRIPTION, len(result))
+            Log.information(f"[TestsHandler executeQueryTest] try to run test of type {testType} and description {description}")
             
-            Log.information("[TestsHandler getPatentCitationsByIdFromNeo4jDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentCitationsByIdFromNeo4jDb] - an error occurred while trying to execute test ~ Error: {error}")
-
-    #Gets patents that cite an author's patents from neo4j db
-    def _getPatentCitationsByAuthorAndRegistrationDateFromNeo4jDb(self, author, date):
-        try:
-            Log.information("[TestsHandler getPatentCitationsByAuthorAndRegistrationDateFromNeo4jDb] try to run test")
-
             startAt = datetime.now()
-            result = self._neo4jDatabase.getPatentCitationsByAuthorAndRegistrationDate(author, date)
+            result = testFunc() if len(params) == 0 else testFunc(params)    
             endAt = datetime.now()
-            self._logInCsvFile(NEO4J_SGBD, TRAVERSAL_TEST, startAt, endAt, AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION, len(result))
-           
-            Log.information("[TestsHandler getPatentCitationsByAuthorAndRegistrationDateFromNeo4jDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentCitationsByAuthorAndRegistrationDateFromNeo4jDb] - an error occurred while trying to execute test ~ Error: {error}")
-    
-    #Gets the number and percentage of citations made and received per patent of the 1000 most recent patents from n3o4j db
-    def _getTop1000LatestPatentsStatisticsFromNeo4jDb(self):
-        try:
-            Log.information("[TestsHandler getTop1000LatestPatentsStatisticsFromNeo4jDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._neo4jDatabase.getTop1000LatestPatentsStatistics()
-            endAt = datetime.now()
-            self._logInCsvFile(NEO4J_SGBD, AGGREGATION_TEST, startAt, endAt, LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION, len(result))
-           
-            Log.information("[TestsHandler getTop1000LatestPatentsStatisticsFromNeo4jDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getTop1000LatestPatentsStatisticsFromNeo4jDb] - an error occurred while trying to execute test ~ Error: {error}")
-
-    #Gets patents count per classification from neo4j db
-    def _getPatentsCountPerClassificationFromNeo4jDb(self):
-        try:
-            Log.information("[TestsHandler getPatentsCountPerClassificationFromNeo4jDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._neo4jDatabase.getPatentsCountPerClassification()
-            endAt = datetime.now()
-            self._logInCsvFile(NEO4J_SGBD, AGGREGATION_TEST, startAt, endAt, PATENTS_COUNT_BY_CLASSIFICATION_TEST_DESCRIPTION, len(result))
-           
-            Log.information("[TestsHandler getPatentsCountPerClassificationFromNeo4jDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentsCountPerClassificationFromNeo4jDb] - an error occurred while trying to execute test ~ Error: {error}")
-      
-    #Gets author's patents from pg neo4j db
-    def _getAuthorPatentsFromNeo4jDb(self, author):
-        try:
-            Log.information("[TestsHandler getAuthorPatentsFromNeo4jDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._neo4jDatabase.getAuthorPatents(author)
-            endAt = datetime.now()
-            self._logInCsvFile(NEO4J_SGBD, NO_TRAVERSAL_TEST, startAt, endAt, AUTHOR_PATENTS_TEST_DESCRIPTION, len(result))
             
-            Log.information("[TestsHandler getAuthorPatentsFromNeo4jDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getAuthorPatentsFromNeo4jDb] - an error occurred while trying to execute test ~ Error: {error}")
-     
-    #Gets patent by id from pg neo4j db
-    def _getPatentByIdFromNeo4jDb(self, patentId):
-        try:
-            Log.information("[TestsHandler getPatentByIdFromNeo4jDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._neo4jDatabase.getPatentById(patentId)
-            endAt = datetime.now()
-            self._logInCsvFile(NEO4J_SGBD, NO_TRAVERSAL_TEST, startAt, endAt, PATENT_BY_ID_TEST_DESCRIPTION, len(result))
+            self._logInCsvFile(sgbd, testType, startAt, endAt, description, len(result))
             
-            Log.information("[TestsHandler getPatentByIdFromNeo4jDb] test run successfully")
+            Log.information(f"[TestsHandler executeQueryTest] test run successfully - Result: {result}")
         except Exception as error:
-            Log.error(f"[TestsHandler getPatentByIdFromNeo4jDb] - an error occurred while trying to execute test ~ Error: {error}")
- 
-    #Gets patents that cite patents of the same classification from neo4j
-    def _getPatentCitationsOfTheSameClassificationFromNeo4jDb(self):
-        try:
-            Log.information("[TestsHandler getPatentCitationsOfTheSameClassificationFromNeo4jDb] try to run test")
-
-            startAt = datetime.now()
-            result = self._neo4jDatabase.getPatentCitationsOfTheSameClassification()
-            endAt = datetime.now()
-            self._logInCsvFile(NEO4J_SGBD, PATTERN_MATCHING_TEST, startAt, endAt, PATTERN_MATCHING_TEST, len(result))
-           
-            Log.information("[TestsHandler getPatentCitationsOfTheSameClassificationFromNeo4jDb] test run successfully")
-        except Exception as error:
-            Log.error(f"[TestsHandler getPatentCitationsOfTheSameClassificationFromNeo4jDb] - an error occurred while trying to execute test ~ Error: {error}")
-      
+            Log.error(f"[TestsHandler executeQueryTest] - an error occurred while trying to execute test ~ Error: {error}")
+       
     #Executes a function using multithread
     def _executeUsingMultithread(self, func, data, maxWorkers):
         with concurrent.futures.ThreadPoolExecutor(max_workers=maxWorkers) as executor:
