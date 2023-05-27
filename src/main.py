@@ -26,8 +26,8 @@ def dataPreProcessing(settings):
       fromNodeRegistrationDate = FakerUtils.generateDateTime(settings.dataset_start_date, settings.dataset_end_date)
       fromNodeData = (ids[0], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], fromNodeRegistrationDate, ids[1])
       mappedIds[ids[0]] = fromNodeData
-    else: fromNodeData = mappedIds[ids[0]]
-        
+    else: fromNodeData = (mappedIds[ids[0]][0], mappedIds[ids[0]][1], mappedIds[ids[0]][2], mappedIds[ids[0]][3], ids[1])
+      
     if(ids[1] not in mappedIds):
       toNodeRegistrationDate = FakerUtils.generateDateTime(fromNodeData[3].strftime("%Y-%m-%d %H:%M:%S"), settings.dataset_end_date)
       toNodeData = (ids[1], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], toNodeRegistrationDate, None)
