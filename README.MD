@@ -43,7 +43,6 @@ Follow these steps to use the application:
 - [PostgreSQL Driver](https://www.psycopg.org/)
 - [Faker](https://pypi.org/project/Faker/)
 - [PyYAML](https://pypi.org/project/PyYAML/)
-- [PyYAML](https://pypi.org/project/PyYAML/)
 - [CSV](https://docs.python.org/3/library/csv.html)
 
 

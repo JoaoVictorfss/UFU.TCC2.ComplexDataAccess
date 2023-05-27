@@ -40,10 +40,6 @@ class Settings:
         return self.data_config['fake']['classificationsTotal']
     
     @property
-    def fake_datetimes_total(self):
-        return self.data_config['fake']['datetimesTotal']
-    
-    @property
     def dataset_start_date(self):
         return self.data_config['dataset']['startDate']
 
@@ -68,20 +64,16 @@ class Settings:
         return self.results_config['basePath']
 
     @property
-    def tests_traversal_filters_patent_id(self):
-        return self.tests_config['traversal']['filters']['patentId']
+    def tests_filters_patent_id(self):
+        return self.tests_config['filters']['patentId']
     
     @property
-    def tests_traversal_filters_author(self):
-        return self.tests_config['traversal']['filters']['author']
+    def tests_filters_author(self):
+        return self.tests_config['filters']['author']
     
     @property
-    def tests_traversal_filters_register_date(self):
-        return self.tests_config['traversal']['filters']['registerDate']
- 
-    @property
-    def tests_traversal_enabled(self):
-        return self.tests_config['traversal']['enabled'] 
+    def tests_filters_registration_date(self):
+        return self.tests_config['filters']['registrationDate']
     
     @property
     def tests_configure_db_enabled(self):
@@ -91,6 +83,22 @@ class Settings:
     def tests_data_load_enabled(self):
         return self.tests_config['dataLoad']['enabled']
     
+    @property
+    def tests_traversal_enabled(self):
+        return self.tests_config['traversal']['enabled']  
+    
+    @property
+    def tests_aggregation_enabled(self):
+        return self.tests_config['aggregation']['enabled']
+    
+    @property
+    def tests_patternMatching_enabled(self):
+        return self.tests_config['patternMatching']['enabled']
+    
+    @property
+    def tests_simple_enabled(self):
+        return self.tests_config['simple']['enabled']       
+
     @property
     def tests_data_load_threads_max(self):
         return self.tests_config['dataLoad']['threadsMax']

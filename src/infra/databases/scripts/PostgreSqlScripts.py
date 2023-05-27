@@ -33,7 +33,8 @@ class PostgreSqlScripts:
       SELECT 1 FROM citation WHERE from_id = %s AND to_id = %s
     )
   """
-  FIND_PATENT_BY_ID = "SELECT * FROM patent WHERE patent_id = %s"
+  GET_PATENT_BY_ID = "SELECT * FROM patent WHERE patent_id = %s"
+  GET_PATENTS_BY_AUTHOR = "SELECT * FROM patent WHERE author = %s"
   GET_PATENT_CITATIONS_BY_ID = """
       SELECT p.*
       FROM citation c
@@ -51,3 +52,36 @@ class PostgreSqlScripts:
           AND registered_at >= %s
       )
   """
+  GET_PATENTS_COUNT_BY_CLASSIFICATION = """
+      SELECT classification, COUNT(*) AS Total FROM patent 
+      GROUP BY classification
+  """
+  GET_1000_LATEST_PATENTS_STATISTICS = """
+  		SELECT TOP 1000
+			patent_id, 
+			p.registered_at, 
+			COUNT(c1) AS GivenTotal,
+			ROUND(CAST(COUNT(c1) AS NUMERIC) / (SELECT COUNT(DISTINCT from_id) FROM citation) * 100, 2) AS GivenPercentage,
+			COUNT(c2) AS ReceivedTotal,
+			ROUND(CAST(COUNT(c2) AS NUMERIC) / (SELECT COUNT(DISTINCT to_id) FROM citation) * 100, 2) AS ReceivedPercentage
+			FROM patent p
+			LEFT JOIN citation as c1
+				ON c1.from_id = p.patent_Id
+			LEFT JOIN citation c2
+				ON c2.to_id = p.patent_Id
+			GROUP BY p.patent_id
+			ORDER BY p.registered_at DESC
+  """
+  GET_CITATIONS_FROM_THE_SAME_PATENTS_CLASSIFICATION = """
+      SELECT 
+        p1.patent_id AS citerId,
+        p1.author AS citerAuthor,
+        p1.classification AS citerClassification,
+        p2.patent_id AS citedPatentId,
+        p2.author AS citedPatentAuthor,
+        p2.classification AS citedClassification
+			FROM patent p1 
+			JOIN citation c ON p1.patent_id = c.from_id
+			JOIN patent p2 ON c.to_id = p2.patent_id 
+			WHERE p1.classification = p2.classification
+"""

@@ -43,7 +43,7 @@ class PgAdapter:
   
   #Executes a sigle dql
   def executeDql(self, cmd, params=None):
-    records = None     
+    records = []     
     
     try:
       Log.debug(f"[PgAdapter executeDql] - Try to execute dql {cmd} with params {params}")
@@ -56,7 +56,6 @@ class PgAdapter:
       Log.information(f"[PgAdapter executeDql] - The dql was executed successfully")
     except Exception as error:
       Log.error(f"[PgAdapter executeDql] - An error occurred while trying to execute dql ~ Error: {error}")
-      return None
     finally:
         cur.close() 
         return records

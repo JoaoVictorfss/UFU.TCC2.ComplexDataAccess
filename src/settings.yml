@@ -11,17 +11,22 @@ tests:
   dataLoad:
     enabled: true
     threadsMax: 10
+  aggregation:
+    enabled: true
+  patternMatching:
+    enabled: true
+  simple:
+    enabled: true
   traversal:
     enabled: true
-    filters:
-      patentId: '3858241'
-      author: 'Travis'
-      registerDate: '1975-01-01'
+  filters:
+    patentId: '3858241'
+    author: 'Travis'
+    registrationDate: '1975-01-01'
 data:
   fake:
     authorsTotal: 10
-    classificationsTotal: 10
-    datetimesTotal: 10
+    classificationsTotal: 400
   dataset:
     startDate: '1975-01-01 00:00:00'
     endDate: '1999-12-31 00:00:00'

@@ -12,7 +12,7 @@ class Neo4jAdpater:
   
   #Executes a sigle query
   def executeQuery(self, query, params=None):
-    records = None
+    records = []
     
     try:
       Log.debug(f"[Neo4jAdpater executeQuery] Try to execute query {query} with params {params}")
