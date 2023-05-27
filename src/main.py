@@ -12,17 +12,30 @@ def dataPreProcessing(settings):
   #Generates fake author names, US patent classifications and registration date for testing with filters
   authors = FakerUtils.generateUniqueFirstNames(settings.fake_authors_total)
   classifications = FakerUtils.generateUsPatentClassifications(settings.fake_classifications_total)
-  datetimes = FakerUtils.generateDateTimes(settings.dataset_start_date, settings.dataset_end_date, settings.fake_datetimes_total)
   
   records = [] 
+  mappedIds = {}
   
   #Generates fake data for each patent's id in dataset file
   for i in range((settings.data_max - 1)):
-    #TODO obter data de registro, sendo as patentes registradas antes com a data maior do que das patebtes citadas
+    fromNodeData = None
+    toNodeData = None
     ids = (patentIdentifiers[i][0]).split("\t")
-    fromNodeData = (ids[0], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], datetimes[getIndex(len(datetimes))], ids[1])
-    toNodeData = (ids[1], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], datetimes[getIndex(len(datetimes))], None)
-    records.append((fromNodeData, toNodeData))
+    
+    if(ids[0] not in mappedIds):
+      fromNodeRegistrationDate = FakerUtils.generateDateTime(settings.dataset_start_date, settings.dataset_end_date)
+      fromNodeData = (ids[0], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], fromNodeRegistrationDate, ids[1])
+      mappedIds[ids[0]] = fromNodeData
+    else: fromNodeData = mappedIds[ids[0]]
+    
+    if(ids[1] not in mappedIds):
+      toNodeRegistrationDate = FakerUtils.generateDateTime(fromNodeData[3], settings.dataset_end_date)
+      toNodeData = (ids[1], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], toNodeRegistrationDate, None)
+      mappedIds[ids[1]] = toNodeData
+    else: toNodeData = mappedIds[ids[1]]
+    
+    if(fromNodeData != None and toNodeData != None):
+      records.append((fromNodeData, toNodeData))
   
   return records
 

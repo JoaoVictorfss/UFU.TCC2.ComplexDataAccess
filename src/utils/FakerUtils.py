@@ -33,15 +33,10 @@ class FakerUtils:
             
         return classifications
     
-    #Generates datetimes between an start date and end date 
+    #Generates datetime between an start date and end date 
     @staticmethod      
-    def generateDateTimes(startDate, endDate, count):
-        datetimes = []      
+    def generateDateTime(startDate, endDate):
         faker = Faker()
         format = "%Y-%m-%d %H:%M:%S"
         
-        while len(datetimes) < count:
-            generatedDate = faker.date_between(datetime.strptime(startDate, format), datetime.strptime(endDate, format))
-            datetimes.append(generatedDate)       
-        
-        return datetimes
+        return faker.date_between(datetime.strptime(startDate, format), datetime.strptime(endDate, format))
