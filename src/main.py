@@ -17,7 +17,7 @@ def dataPreProcessing(settings):
   mappedIds = {}
   
   #Generates fake data for each patent's id in dataset file
-  for i in range((settings.data_max - 1)):
+  for i in range((settings.data_max)):
     ids = (patentIdentifiers[i][0]).split("\t")
     fromNodeData = None
     toNodeData = None
@@ -27,9 +27,9 @@ def dataPreProcessing(settings):
       fromNodeData = (ids[0], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], fromNodeRegistrationDate, ids[1])
       mappedIds[ids[0]] = fromNodeData
     else: fromNodeData = mappedIds[ids[0]]
-    
+        
     if(ids[1] not in mappedIds):
-      toNodeRegistrationDate = FakerUtils.generateDateTime(fromNodeData[3], settings.dataset_end_date)
+      toNodeRegistrationDate = FakerUtils.generateDateTime(fromNodeData[3].strftime("%Y-%m-%d %H:%M:%S"), settings.dataset_end_date)
       toNodeData = (ids[1], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], toNodeRegistrationDate, None)
       mappedIds[ids[1]] = toNodeData
     else: toNodeData = mappedIds[ids[1]]

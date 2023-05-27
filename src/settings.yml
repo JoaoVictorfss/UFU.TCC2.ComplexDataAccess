@@ -12,13 +12,13 @@ tests:
     enabled: true
     threadsMax: 10
   aggregation:
-    enabled: true
+    enabled: false
   patternMatching:
-    enabled: true
+    enabled: false
   simple:
-    enabled: true
+    enabled: false
   traversal:
-    enabled: true
+    enabled: false
   filters:
     patentId: '3858241'
     author: 'Travis'
@@ -26,12 +26,12 @@ tests:
 data:
   fake:
     authorsTotal: 10
-    classificationsTotal: 400
+    classificationsTotal: 10
   dataset:
     startDate: '1975-01-01 00:00:00'
     endDate: '1999-12-31 00:00:00'
     total: 17
-    filePath: domain/dataset/snap/stanford/cit-Patents.txt
+    filePath: domain/dataset/snap/stanford/dataset.txt
   max: 10
 results:
   basePath: tests/results

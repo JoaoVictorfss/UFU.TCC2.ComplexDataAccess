@@ -25,7 +25,7 @@ BRAZIL_DATE_FORMAT = "%Y/%m/%d %H:%M"
 class TestsHandler:
     def __init__(self, settings):
         self._settings = settings
-        self._csvFieldNames = ["SGBD", "Test Type", "Start At", "End At", "Executation Time(MS)"]
+        self._csvFieldNames = ["SGBD", "Test Type", "Description", "Start At", "End At", "Executation Time(MS)", "Result"]
         self._csvFileBasePath = settings.results_base_path
         self._pgDatabase = PostgreSqlDatabase()
         self._neo4jDatabase = Neo4jDatabase()

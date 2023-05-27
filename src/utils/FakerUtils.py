@@ -36,7 +36,5 @@ class FakerUtils:
     #Generates datetime between an start date and end date 
     @staticmethod      
     def generateDateTime(startDate, endDate):
-        faker = Faker()
-        format = "%Y-%m-%d %H:%M:%S"
-        
-        return faker.date_between(datetime.strptime(startDate, format), datetime.strptime(endDate, format))
+        faker = Faker()        
+        return faker.date_between(datetime.strptime(startDate, "%Y-%m-%d %H:%M:%S"), datetime.strptime(endDate, "%Y-%m-%d %H:%M:%S"))
