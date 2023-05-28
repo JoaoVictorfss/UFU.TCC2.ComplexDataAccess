@@ -27,6 +27,7 @@ data:
   fake:
     authorsTotal: 10000
     classificationsTotal: 400
+    batchSize: 100
   dataset:
     startDate: '1975-01-01 00:00:00'
     endDate: '1999-12-31 00:00:00'

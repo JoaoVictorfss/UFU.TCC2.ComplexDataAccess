@@ -40,6 +40,10 @@ class Settings:
         return self.data_config['fake']['classificationsTotal']
     
     @property
+    def fake_batchSize(self):
+        return self.data_config['fake']['batchSize']
+    
+    @property
     def dataset_start_date(self):
         return self.data_config['dataset']['startDate']
 
