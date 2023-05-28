@@ -6,17 +6,16 @@ from datetime import datetime
 class FakerUtils:
     #Generates unique first names
     @staticmethod
-    def generateUniqueFirstNames(count):
-        firstNames = set()
+    def generateNames(count):
+        names = set()
         faker = Faker()
               
-        while len(firstNames) < count:
-           firstName = faker.unique.first_name()
-           
-           if len(firstName) <= 60:
-            firstNames.add(firstName)
+        while len(names) < count:
+           name = faker.name()
+           if len(name) <= 60:
+            names.add(name)
                    
-        return list(firstNames)
+        return list(names)
 
     #Generates US patent's classifications  
     @staticmethod      

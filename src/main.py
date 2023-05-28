@@ -11,7 +11,7 @@ def dataPreProcessing(settings):
   patentIdentifiers = FileHandler.retrieveData(settings.dataset_file_path)
   
   #Generates fake author names and US patent classifications for testing with filters
-  authors = FakerUtils.generateUniqueFirstNames(settings.fake_authors_total)
+  authors = FakerUtils.generateNames(settings.fake_authors_total)
   classifications = FakerUtils.generateUsPatentClassifications(settings.fake_classifications_total)
   
   records = [] 

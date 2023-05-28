@@ -9,29 +9,29 @@ tests:
   configureDb:
     enabled: false
   dataLoad:
-    enabled: false
-    threadsMax: 10
+    enabled: true
+    threadsMax: 100
   aggregation:
     enabled: true
   patternMatching:
     enabled: true
   simple:
-    enabled: true
+    enabled: false
   traversal:
-    enabled: true
+    enabled: false
   filters:
     patentId: '3858241'
     author: 'Frederick'
     registrationDate: '1975-01-01'
 data:
   fake:
-    authorsTotal: 10
-    classificationsTotal: 2
+    authorsTotal: 10000
+    classificationsTotal: 400
   dataset:
     startDate: '1975-01-01 00:00:00'
     endDate: '1999-12-31 00:00:00'
-    total: 17
-    filePath: domain/dataset/snap/stanford/dataset.txt
-  max: 10
+    total: 10000
+    filePath: domain/dataset/snap/stanford/cit-Patents.txt
+  max: 10000
 results:
-  basePath: tests/results
+  basePath: tests/10k/results
