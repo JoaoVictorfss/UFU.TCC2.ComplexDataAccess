@@ -17,7 +17,7 @@ PATENT_BY_ID_TEST_DESCRIPTION = "Test to get a patent by id"
 AUTHOR_PATENTS_TEST_DESCRIPTION = "Test to get author's patents"
 LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION = "Test to get the number and percentage of citations made and received per patent of the 1000 most recent patents"
 PATENTS_COUNT_BY_CLASSIFICATION_TEST_DESCRIPTION = "Test to get patents count per classification"
-PATENT_CITATIONS_TEST_DESCRIPTION = "Test to get patents that cite a specific one"
+TRIPLE_CITATION_PATH = "Test to identify cases where a patent is cited by another patent, this cited patent is in turn cited by a co-author, and this co-author cites a third patent"
 AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION = "Test to get patents that cite patents of a specific author"
 BRAZIL_DATE_FORMAT = "%Y/%m/%d %H:%M"
 
@@ -55,8 +55,8 @@ class TestsHandler:
 
     #Executes queries with traversal for PostgreSql and Neo4j
     def executeTestsWithTraversingQueries(self):
-        self._executeQueryTest(self._pgDatabase.getPatentCitationsById, POSTGRESQL_SGBD, TRAVERSAL_TEST, PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
-        self._executeQueryTest(self._neo4jDatabase.getPatentCitationsById, NEO4J_SGBD, TRAVERSAL_TEST, PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
+        self._executeQueryTest(self._pgDatabase.findTripleCitationPath, POSTGRESQL_SGBD, TRAVERSAL_TEST, TRIPLE_CITATION_PATH)   
+        self._executeQueryTest(self._neo4jDatabase.findTripleCitationPath, NEO4J_SGBD, TRAVERSAL_TEST, TRIPLE_CITATION_PATH)
         
         date = datetime.strptime(self._settings.tests_filters_registration_date, "%Y-%m-%d").date()
         self._executeQueryTest(self._pgDatabase.getPatentCitationsByAuthorAndRegistrationDate, POSTGRESQL_SGBD, TRAVERSAL_TEST, AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_author, date)   
@@ -105,12 +105,12 @@ class TestsHandler:
         except Exception as error:
             Log.error(f"[TestsHandler executePgDataLoadTest] - an error occurred while trying to execute test ~ Error: {error}")
 
-    def _executeQueryTest(self, testFunc, sgbd, testType, description, *params):
+    def _executeQueryTest(self, testFunc, sgbd, testType, description, param1=None, param2=None):
         try:
             Log.information(f"[TestsHandler executeQueryTest] try to run test of type {testType} and description {description}")
             
             startAt = datetime.now()
-            result = testFunc() if len(params) == 0 else testFunc(params)    
+            result = testFunc() if param1 == None else testFunc(param1) if param2 == None else testFunc(param1, param2)  
             endAt = datetime.now()
             
             self._logInCsvFile(sgbd, testType, startAt, endAt, description, len(result))
