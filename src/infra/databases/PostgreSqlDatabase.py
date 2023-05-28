@@ -3,19 +3,20 @@ from infra.databases.scripts.PostgreSqlScripts import PostgreSqlScripts
 
 #PostgreSql Database Manager
 class PostgreSqlDatabase:
-    #Creates the database structure
-    def init(self, settings):
+    #Creates a new connection
+    def createConnection(self, settings):
         self._pgAdapter = PgAdapter(settings.postgresql_conn_str)
-        if(settings.tests_configure_db_enabled):
-            commands = [
-                PostgreSqlScripts.CREATE_TABLE_PATENT,
-                PostgreSqlScripts.CREATE_TABLE_CITATION,
-                PostgreSqlScripts.CREATE_INDEX_PATENT_ID,
-                PostgreSqlScripts.CREATE_INDEX_PATENT_AUTHOR,
-                PostgreSqlScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
-                PostgreSqlScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
-            ]
-            self._pgAdapter.executeDdls(commands)
+    
+    def configureDb(self):
+        commands = [
+            PostgreSqlScripts.CREATE_TABLE_PATENT,
+            PostgreSqlScripts.CREATE_TABLE_CITATION,
+            PostgreSqlScripts.CREATE_INDEX_PATENT_ID,
+            PostgreSqlScripts.CREATE_INDEX_PATENT_AUTHOR,
+            PostgreSqlScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
+            PostgreSqlScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
+        ]
+        self._pgAdapter.executeDdls(commands)
     
     #Insert into patent and citation tables
     def setRecords(self, records):
@@ -54,5 +55,5 @@ class PostgreSqlDatabase:
         return self._pgAdapter.executeDql(PostgreSqlScripts.GET_PATENTS_COUNT_BY_CLASSIFICATION)
 
     #Close driver's connection    
-    def close(self): 
+    def closeConnection(self): 
         self._pgAdapter.closeConnection() 

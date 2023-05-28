@@ -7,10 +7,10 @@ db:
     password: 'dE3ikBb4Z5X9V2lklFTq5FBAHLn_OvY6RH30cxkZQPg'
 tests:
   configureDb:
-    enabled: false
+    enabled: true
   dataLoad:
     enabled: true
-    threadsMax: 100
+    threadsMax: 2
   aggregation:
     enabled: true
   patternMatching:

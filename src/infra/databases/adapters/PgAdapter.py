@@ -24,7 +24,7 @@ class PgAdapter:
     except Exception as error:
       Log.error(f"[PgAdapter executeDdls] - An error occurred while trying to execute ddls ~ Error: {error}")
     finally:
-        cur.close()
+      cur.close()
   
   #Executes a sigle dml
   def executeDml(self, cmd, params=None):
@@ -39,7 +39,7 @@ class PgAdapter:
     except Exception as error:
       Log.error(f"[PgAdapter executeDml] - An error occurred while trying to execute dml ~ Error: {error}")
     finally:
-        cur.close()
+      cur.close()
   
   #Executes a sigle dql
   def executeDql(self, cmd, params=None):
@@ -57,8 +57,8 @@ class PgAdapter:
     except Exception as error:
       Log.error(f"[PgAdapter executeDql] - An error occurred while trying to execute dql ~ Error: {error}")
     finally:
-        cur.close() 
-        return records
+      cur.close() 
+      return records
 
   def closeConnection(self):
       self.__conn.close()

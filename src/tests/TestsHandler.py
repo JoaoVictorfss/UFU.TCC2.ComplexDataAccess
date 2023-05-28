@@ -30,51 +30,73 @@ class TestsHandler:
         self._pgDatabase = PostgreSqlDatabase()
         self._neo4jDatabase = Neo4jDatabase()
     
-    #Start tests: Creates the databases structure and configuration
-    def startTests(self):
-        Log.information("[TestsHandler] try to run tests")
-        self._pgDatabase.init(self._settings)
-        self._neo4jDatabase.init(self._settings)
-    
+    def configureDbs(self):
+        self._pgDatabase.createConnection(self._settings)
+        self._pgDatabase.configureDb()
+        self._pgDatabase.closeConnection()
+        
+        self._neo4jDatabase.createConnection(self._settings)
+        self._neo4jDatabase.configureDb()
+        self._neo4jDatabase.closeConnection()
+        
     #Executes the data load test for PostgreSql and Neo4j
     def executeDataLoadTests(self, records):
+        self._pgDatabase.createConnection(self._settings)
         self._executePgDataLoadTest(records)
+        self._pgDatabase.closeConnection()
+
+        self._neo4jDatabase.createConnection(self._settings)
         self._executeNeo4jDataLoadTest(records)
-    
+        self._neo4jDatabase.closeConnection()
+
     #Executes pattern matching queries for PostgreSql and Neo4j
     def executeTestsWithPatternMatchingQueries(self):
+        self._pgDatabase.createConnection(self._settings)
         self._executeQueryTest(self._pgDatabase.getPatentCitationsOfTheSameClassification, POSTGRESQL_SGBD, PATTERN_MATCHING_TEST, PATTERN_MATCHING_TEST)   
+        self._pgDatabase.closeConnection()
+
+        self._neo4jDatabase.createConnection(self._settings)
         self._executeQueryTest(self._neo4jDatabase.getPatentCitationsOfTheSameClassification, NEO4J_SGBD, PATTERN_MATCHING_TEST, PATTERN_MATCHING_TEST)   
+        self._neo4jDatabase.closeConnection()
 
     #Executes aggregation queries for PostgreSql and Neo4j
     def executeTestsWithAggregationQueries(self):
+        self._pgDatabase.createConnection(self._settings)
         self._executeQueryTest(self._pgDatabase.getTop1000LatestPatentsStatistics, POSTGRESQL_SGBD, AGGREGATION_TEST, LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION)   
-        self._executeQueryTest(self._neo4jDatabase.getTop1000LatestPatentsStatistics, NEO4J_SGBD, AGGREGATION_TEST, LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION)   
         self._executeQueryTest(self._pgDatabase.getPatentsCountPerClassification, POSTGRESQL_SGBD, AGGREGATION_TEST, PATENTS_COUNT_BY_CLASSIFICATION_TEST_DESCRIPTION)   
+        self._pgDatabase.closeConnection()
+
+        self._neo4jDatabase.createConnection(self._settings)
+        self._executeQueryTest(self._neo4jDatabase.getTop1000LatestPatentsStatistics, NEO4J_SGBD, AGGREGATION_TEST, LATEST_PATENTS_STATISTIC_TEST_DESCRIPTION)   
         self._executeQueryTest(self._neo4jDatabase.getPatentsCountPerClassification, NEO4J_SGBD, AGGREGATION_TEST, PATENTS_COUNT_BY_CLASSIFICATION_TEST_DESCRIPTION)   
+        self._neo4jDatabase.closeConnection()
 
     #Executes queries with traversal for PostgreSql and Neo4j
     def executeTestsWithTraversingQueries(self):
-        self._executeQueryTest(self._pgDatabase.findTripleCitationPath, POSTGRESQL_SGBD, TRAVERSAL_TEST, TRIPLE_CITATION_PATH)   
-        self._executeQueryTest(self._neo4jDatabase.findTripleCitationPath, NEO4J_SGBD, TRAVERSAL_TEST, TRIPLE_CITATION_PATH)
-        
         date = datetime.strptime(self._settings.tests_filters_registration_date, "%Y-%m-%d").date()
+        
+        self._pgDatabase.createConnection(self._settings)
         self._executeQueryTest(self._pgDatabase.getPatentCitationsByAuthorAndRegistrationDate, POSTGRESQL_SGBD, TRAVERSAL_TEST, AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_author, date)   
+        self._executeQueryTest(self._pgDatabase.findTripleCitationPath, POSTGRESQL_SGBD, TRAVERSAL_TEST, TRIPLE_CITATION_PATH)   
+        self._pgDatabase.closeConnection()
+
+        self._neo4jDatabase.createConnection(self._settings)
         self._executeQueryTest(self._neo4jDatabase.getPatentCitationsByAuthorAndRegistrationDate, NEO4J_SGBD, TRAVERSAL_TEST, AUTHOR_PATENT_CITATIONS_TEST_DESCRIPTION, self._settings.tests_filters_author, date)   
- 
+        self._executeQueryTest(self._neo4jDatabase.findTripleCitationPath, NEO4J_SGBD, TRAVERSAL_TEST, TRIPLE_CITATION_PATH)
+        self._neo4jDatabase.closeConnection()
+
     #Executes queries without traversal for PostgreSql and Neo4j
     def executeTestsWithoutTraversingQueries(self):
+        self._pgDatabase.createConnection(self._settings)
         self._executeQueryTest(self._pgDatabase.getPatentById, POSTGRESQL_SGBD, NO_TRAVERSAL_TEST, PATENT_BY_ID_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
-        self._executeQueryTest(self._neo4jDatabase.getPatentById, NEO4J_SGBD, NO_TRAVERSAL_TEST, PATENT_BY_ID_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
         self._executeQueryTest(self._pgDatabase.getAuthorPatents, POSTGRESQL_SGBD, NO_TRAVERSAL_TEST, AUTHOR_PATENTS_TEST_DESCRIPTION, self._settings.tests_filters_author)   
-        self._executeQueryTest(self._neo4jDatabase.getAuthorPatents, NEO4J_SGBD, NO_TRAVERSAL_TEST, AUTHOR_PATENTS_TEST_DESCRIPTION, self._settings.tests_filters_author)   
+        self._pgDatabase.closeConnection()
         
-    #Finishes the tests and close driver's connections   
-    def endTests(self):
-        self._pgDatabase.close()
-        self._neo4jDatabase.close()
-        Log.information("[TestsHandler] Tests run successfully")   
-    
+        self._neo4jDatabase.createConnection(self._settings)
+        self._executeQueryTest(self._neo4jDatabase.getPatentById, NEO4J_SGBD, NO_TRAVERSAL_TEST, PATENT_BY_ID_TEST_DESCRIPTION, self._settings.tests_filters_patent_id)   
+        self._executeQueryTest(self._neo4jDatabase.getAuthorPatents, NEO4J_SGBD, NO_TRAVERSAL_TEST, AUTHOR_PATENTS_TEST_DESCRIPTION, self._settings.tests_filters_author)   
+        self._neo4jDatabase.closeConnection()
+ 
     #Region of private methods
     
     #Executes the data load test for PostgreSql

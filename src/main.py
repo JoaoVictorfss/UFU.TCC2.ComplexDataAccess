@@ -8,16 +8,9 @@ from infra.io.logs.LogInConsole import LogInConsole as Log
 
 #Method to handle data pre processing
 def dataPreProcessing(settings):
-  #retrieves data from dataset file
-  Log.information("Try to get patent's ids from dataset")
-  
+  #retrieves data from dataset file  
   patentIdentifiers = FileHandler.retrieveData(settings.dataset_file_path, settings.data_max)
-  
-  Log.information("Try to generates's fake names")
-  #Generates fake author names and US patent classifications for testing with filters
   authors = FakerUtils.generateNames(settings.fake_authors_total)
-  
-  Log.information("Try to generates's fake patent classifications")
   classifications = FakerUtils.generateUsPatentClassifications(settings.fake_classifications_total)
   
   records = [] 
@@ -25,6 +18,8 @@ def dataPreProcessing(settings):
   
   #Generates fake data for each patent's id in dataset file
   for i in range((settings.data_max)):
+    Log.information(f"Index {i}")
+
     ids = (patentIdentifiers[i][0]).split("\t")
     fromNodeData = None
     toNodeData = None
@@ -53,12 +48,19 @@ def getIndex(len):
 
 def main():
   settings = Settings('settings.yml')
-  records = dataPreProcessing(settings)
-
+  
+  records = None
+  
+  if(settings.tests_data_load_enabled):
+    records = dataPreProcessing(settings)  
+  
   #Start test
   testsHandler = TestsHandler(settings)
-  testsHandler.startTests() 
   
+  #Configure Db
+  if(settings.tests_configure_db_enabled):
+    testsHandler.configureDbs()
+    
   #Executes tests
   if(settings.tests_data_load_enabled):
     testsHandler.executeDataLoadTests(records)
@@ -70,8 +72,5 @@ def main():
     testsHandler.executeTestsWithAggregationQueries()
   if(settings.tests_simple_enabled):
     testsHandler.executeTestsWithoutTraversingQueries()
-    
-  #End tests
-  testsHandler.endTests()
 
 main()

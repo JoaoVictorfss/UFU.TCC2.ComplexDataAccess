@@ -4,18 +4,19 @@ from datetime import datetime
 
 #Neo4j Database Manager
 class Neo4jDatabase:
-    #Creates the database structure
-    def init(self, settings):
+    #Creates a new connection
+    def createConnection(self, settings):
         self._neo4jAdapter = Neo4jAdpater(settings.neo4j_uri, settings.neo4j_user, settings.neo4j_password)
-        if(settings.tests_configure_db_enabled):
-            commands = [
-                Neo4jScripts.CREATE_INDEX_PATENT_ID,
-                Neo4jScripts.CREATE_INDEX_PATENT_AUTHOR,
-                Neo4jScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
-                Neo4jScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
-            ]
-            self._neo4jAdapter.executeQueries(commands)
-       
+    
+    def configureDb(self):
+        commands = [
+            Neo4jScripts.CREATE_INDEX_PATENT_ID,
+            Neo4jScripts.CREATE_INDEX_PATENT_AUTHOR,
+            Neo4jScripts.CREATE_INDEX_PATENT_CLASSIFICATION,
+            Neo4jScripts.CREATE_INDEX_PATENT_REGISTERED_DATE
+        ]
+        self._neo4jAdapter.executeQueries(commands)
+        
     #Creates patent's nodes and relationships
     def setRecords(self, records):
         rows = list(map(lambda record: {
@@ -56,6 +57,6 @@ class Neo4jDatabase:
         return self._neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENTS_COUNT_BY_CLASSIFICATION)
 
     #Close driver's connection
-    def close(self): 
+    def closeConnection(self): 
         self._neo4jAdapter.closeConnection()
  
