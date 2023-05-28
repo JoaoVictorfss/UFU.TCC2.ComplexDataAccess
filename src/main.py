@@ -4,14 +4,20 @@ from utils.RandomUtils import RandomUtils
 from tests.TestsHandler import TestsHandler
 from domain.config.Settings import Settings 
 from datetime import timedelta
+from infra.io.logs.LogInConsole import LogInConsole as Log
 
 #Method to handle data pre processing
 def dataPreProcessing(settings):
   #retrieves data from dataset file
-  patentIdentifiers = FileHandler.retrieveData(settings.dataset_file_path)
+  Log.information("Try to get patent's ids from dataset")
   
+  patentIdentifiers = FileHandler.retrieveData(settings.dataset_file_path, settings.data_max)
+  
+  Log.information("Try to generates's fake names")
   #Generates fake author names and US patent classifications for testing with filters
   authors = FakerUtils.generateNames(settings.fake_authors_total)
+  
+  Log.information("Try to generates's fake patent classifications")
   classifications = FakerUtils.generateUsPatentClassifications(settings.fake_classifications_total)
   
   records = [] 
@@ -23,12 +29,14 @@ def dataPreProcessing(settings):
     fromNodeData = None
     toNodeData = None
     
+    Log.information(f"Generating fake data for patentId {ids[0]}")
     if(ids[0] not in mappedIds):
       fromNodeRegistrationDate = FakerUtils.generateDateTime(settings.dataset_start_date, settings.dataset_end_date)
       fromNodeData = (ids[0], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], fromNodeRegistrationDate, ids[1])
       mappedIds[ids[0]] = fromNodeData
     else: fromNodeData = (mappedIds[ids[0]][0], mappedIds[ids[0]][1], mappedIds[ids[0]][2], mappedIds[ids[0]][3], ids[1])
       
+    Log.information(f"Generating fake data for patentId {ids[1]}")
     if(ids[1] not in mappedIds):
       toNodeRegistrationDate = FakerUtils.generateDateTime((fromNodeData[3] + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"), settings.dataset_end_date)
       toNodeData = (ids[1], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], toNodeRegistrationDate, None)
