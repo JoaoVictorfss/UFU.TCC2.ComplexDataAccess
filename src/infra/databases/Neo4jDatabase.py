@@ -27,17 +27,17 @@ class Neo4jDatabase:
         }, records))
         self._neo4jAdapter.executeTransaction(Neo4jScripts.CREATE_NODES_AND_RELATIONSHIP, rows)
 
-    #Gets all patents that cite a specific one by id 
-    def getPatentCitationsById(self, patentId):
-        return self._neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_CITATIONS_BY_ID, {"patent_id": patentId})
+    #Function to find triple citation paths. The goal is to identify cases where a patent is cited by another patent, this cited patent is in turn cited by a co-author, and this co-author cites a third patent.
+    def findTripleCitationPath(self):
+        return self._neo4jAdapter.executeQuery(Neo4jScripts.FIND_TRIPLE_CITATION_PATH)
 
     #Gets all patents that cite an author's patents on a given registration date
     def getPatentCitationsByAuthorAndRegistrationDate(self, author, date):
-        return self._neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTRATION_DATE, {"author": author, "registered_at": date})
+        return self._neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTRATION_DATE, {"author": author, "registration_date": date})
     
     #Gets patent by id
     def getPatentById(self, patentId):
-        return self._neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_BY_ID, {"patent_id": patentId})
+        return self._neo4jAdapter.executeQuery(Neo4jScripts.GET_PATENT_BY_ID, {"patentId": patentId})
 
     #Gets author's patents
     def getAuthorPatents(self, author):

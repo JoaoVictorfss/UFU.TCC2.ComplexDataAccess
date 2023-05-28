@@ -25,9 +25,9 @@ class PostgreSqlDatabase:
         self._pgAdapter.executeDml(
             PostgreSqlScripts.INSERT_INTO_CITATION_IF_NOT_EXISTS, (records[0][0], records[1][0], records[0][0], records[1][0],))
 
-    #Gets all patents that cite a specific one by id 
-    def getPatentCitationsById(self, patentId):
-        return self._pgAdapter.executeDql(PostgreSqlScripts.GET_PATENT_CITATIONS_BY_ID, (patentId,))
+    #Function to find triple citation paths. The goal is to identify cases where a patent is cited by another patent, this cited patent is in turn cited by a co-author, and this co-author cites a third patent.
+    def findTripleCitationPath(self):
+        return self._pgAdapter.executeDql(PostgreSqlScripts.FIND_TRIPLE_CITATION_PATH)
     
     #Gets all patents that cite an author's patents on a given registration date
     def getPatentCitationsByAuthorAndRegistrationDate(self, author, date):

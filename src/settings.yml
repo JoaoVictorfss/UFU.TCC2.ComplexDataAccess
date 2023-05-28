@@ -7,26 +7,26 @@ db:
     password: 'dE3ikBb4Z5X9V2lklFTq5FBAHLn_OvY6RH30cxkZQPg'
 tests:
   configureDb:
-    enabled: true
+    enabled: false
   dataLoad:
-    enabled: true
+    enabled: false
     threadsMax: 10
   aggregation:
-    enabled: false
+    enabled: true
   patternMatching:
-    enabled: false
+    enabled: true
   simple:
-    enabled: false
+    enabled: true
   traversal:
-    enabled: false
+    enabled: true
   filters:
     patentId: '3858241'
-    author: 'Travis'
+    author: 'Frederick'
     registrationDate: '1975-01-01'
 data:
   fake:
     authorsTotal: 10
-    classificationsTotal: 10
+    classificationsTotal: 2
   dataset:
     startDate: '1975-01-01 00:00:00'
     endDate: '1999-12-31 00:00:00'

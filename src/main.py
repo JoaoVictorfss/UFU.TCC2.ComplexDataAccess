@@ -3,6 +3,7 @@ from infra.io.files.FileHandler import FileHandler
 from utils.RandomUtils import RandomUtils
 from tests.TestsHandler import TestsHandler
 from domain.config.Settings import Settings 
+from datetime import timedelta
 
 #Method to handle data pre processing
 def dataPreProcessing(settings):
@@ -29,7 +30,7 @@ def dataPreProcessing(settings):
     else: fromNodeData = (mappedIds[ids[0]][0], mappedIds[ids[0]][1], mappedIds[ids[0]][2], mappedIds[ids[0]][3], ids[1])
       
     if(ids[1] not in mappedIds):
-      toNodeRegistrationDate = FakerUtils.generateDateTime(fromNodeData[3].strftime("%Y-%m-%d %H:%M:%S"), settings.dataset_end_date)
+      toNodeRegistrationDate = FakerUtils.generateDateTime((fromNodeData[3] + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"), settings.dataset_end_date)
       toNodeData = (ids[1], authors[getIndex(len(authors))], classifications[getIndex(len(classifications))], toNodeRegistrationDate, None)
       mappedIds[ids[1]] = toNodeData
     else: toNodeData = mappedIds[ids[1]]

@@ -35,11 +35,20 @@ class PostgreSqlScripts:
   """
   GET_PATENT_BY_ID = "SELECT * FROM patent WHERE patent_id = %s"
   GET_PATENTS_BY_AUTHOR = "SELECT * FROM patent WHERE author = %s"
-  GET_PATENT_CITATIONS_BY_ID = """
-      SELECT p.*
-      FROM citation c
-      INNER JOIN patent p ON c.from_id = p.patent_id
-      WHERE c.to_id = %s
+  FIND_TRIPLE_CITATION_PATH = """
+    SELECT p1.patent_id AS patentId,
+          p1.author AS author,
+          ARRAY_AGG(DISTINCT p2.patent_id) AS relatedPatents,
+          ARRAY_AGG(DISTINCT coAuthor.author) AS coAuthors,
+          ARRAY_AGG(DISTINCT p3.patent_id) AS otherPatents
+    FROM patent p1
+    JOIN citation c1 ON p1.patent_id = c1.to_id
+    JOIN patent p2 ON c1.from_id = p2.patent_id
+    JOIN citation c2 ON p2.patent_id = c2.to_id
+    JOIN patent coAuthor ON c2.from_id = coAuthor.patent_id
+    JOIN citation c3 ON coAuthor.patent_id = c3.from_id
+    JOIN patent p3 ON c3.to_id = p3.patent_id
+    GROUP BY p1.patent_id, p1.author
   """
   GET_PATENT_CITATIONS_BY_AUTHOR_AND_REGISTRATION_DATE = """
       SELECT p.*
@@ -57,13 +66,13 @@ class PostgreSqlScripts:
       GROUP BY classification
   """
   GET_1000_LATEST_PATENTS_STATISTICS = """
-  		SELECT TOP 1000
+  		SELECT
 			patent_id, 
 			p.registered_at, 
 			COUNT(c1) AS GivenTotal,
-			ROUND(CAST(COUNT(c1) AS NUMERIC) / (SELECT COUNT(DISTINCT from_id) FROM citation) * 100, 2) AS GivenPercentage,
+			ROUND(100 * CAST(COUNT(c1) AS NUMERIC) / CAST((SELECT COUNT(from_id) FROM citation) AS NUMERIC), 2) AS GivenPercentage,
 			COUNT(c2) AS ReceivedTotal,
-			ROUND(CAST(COUNT(c2) AS NUMERIC) / (SELECT COUNT(DISTINCT to_id) FROM citation) * 100, 2) AS ReceivedPercentage
+			ROUND(100 * CAST(COUNT(c2) AS NUMERIC) / CAST((SELECT COUNT(to_id) FROM citation) AS NUMERIC), 2) AS ReceivedPercentage
 			FROM patent p
 			LEFT JOIN citation as c1
 				ON c1.from_id = p.patent_Id
@@ -71,15 +80,16 @@ class PostgreSqlScripts:
 				ON c2.to_id = p.patent_Id
 			GROUP BY p.patent_id
 			ORDER BY p.registered_at DESC
+      LIMIT 1000
   """
   GET_CITATIONS_FROM_THE_SAME_PATENTS_CLASSIFICATION = """
       SELECT 
-        p1.patent_id AS citerId,
-        p1.author AS citerAuthor,
-        p1.classification AS citerClassification,
+        p1.patent_id AS citerPatentId,
+        p1.author AS citerPatentAuthor,
+        p1.classification AS citerPatentClassification,
         p2.patent_id AS citedPatentId,
         p2.author AS citedPatentAuthor,
-        p2.classification AS citedClassification
+        p2.classification AS citedPatentClassification
 			FROM patent p1 
 			JOIN citation c ON p1.patent_id = c.from_id
 			JOIN patent p2 ON c.to_id = p2.patent_id 
