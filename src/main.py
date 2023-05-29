@@ -19,6 +19,8 @@ def dataPreProcessing(settings):
   lock = threading.Lock() 
 
   def processBatch(start_index, end_index):
+    batchRecords = []
+    
     for i in range(start_index, end_index):
       ids = patentIdentifiers[i][0].split("\t")
       fromNodeData = None
@@ -41,16 +43,16 @@ def dataPreProcessing(settings):
           toNodeData = mappedIds[ids[1]]
 
       if fromNodeData is not None and toNodeData is not None:
-        with lock:
-          records.append((fromNodeData, toNodeData))
-
-  batch_size = settings.fake_batchSize  
+        batchRecords.append((fromNodeData, toNodeData))
+        
+    with lock:
+      records.extend(batchRecords)  
 
   with ThreadPoolExecutor() as executor:
       futures = []
-      for i in range(settings.data_max):
-        start_index = i * batch_size
-        end_index = (i + 1) * batch_size
+      for i in range(0, settings.data_max, settings.fake_batchSize):
+        start_index = i
+        end_index = min(i + settings.fake_batchSize, settings.data_max)
         future = executor.submit(processBatch, start_index, end_index)
         futures.append(future)
 

@@ -137,7 +137,7 @@ class TestsHandler:
             
             self._logInCsvFile(sgbd, testType, startAt, endAt, description, len(result))
             
-            Log.information(f"[TestsHandler executeQueryTest] test run successfully - Result: {result}")
+            Log.information(f"[TestsHandler executeQueryTest] test run successfully")
         except Exception as error:
             Log.error(f"[TestsHandler executeQueryTest] - an error occurred while trying to execute test ~ Error: {error}")
        

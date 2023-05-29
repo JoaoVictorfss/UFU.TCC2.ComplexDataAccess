@@ -1,38 +1,38 @@
 db:
   postgresql:
-    connStr: 'postgres://bibhbgwi:ANb3vUUo213tKtNuYC7V812F8-Zdc0gQ@horton.db.elephantsql.com/bibhbgwi'
+    connStr: ''
   neo4j:
     uri: 'neo4j+s://b169bf9c.databases.neo4j.io'
     user: 'neo4j'
-    password: 'dE3ikBb4Z5X9V2lklFTq5FBAHLn_OvY6RH30cxkZQPg'
+    password: ''
 tests:
   configureDb:
     enabled: true
   dataLoad:
     enabled: true
-    threadsMax: 2
+    threadsMax: 5
   aggregation:
     enabled: true
   patternMatching:
     enabled: true
   simple:
-    enabled: false
+    enabled: true
   traversal:
-    enabled: false
+    enabled: true
   filters:
     patentId: '3858241'
     author: 'Frederick'
     registrationDate: '1975-01-01'
 data:
   fake:
-    authorsTotal: 10000
-    classificationsTotal: 400
-    batchSize: 100
+    authorsTotal: 10
+    classificationsTotal: 10
+    batchSize: 10  
   dataset:
     startDate: '1975-01-01 00:00:00'
     endDate: '1999-12-31 00:00:00'
-    total: 10000
-    filePath: domain/dataset/snap/stanford/cit-Patents.txt
-  max: 10000
+    total: 50000
+    filePath: domain/dataset/snap/stanford/dataset.txt
+  max: 10
 results:
-  basePath: tests/10k/results
+  basePath: tests/50k/results
