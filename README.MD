@@ -1,9 +1,9 @@
 # Complex Data Access Test Application
 
-<img src="https://github.com/JoaoVictorfss/UFU.TCC2.ComplexDataAccess/blob/master/docs/digrama_sequencial.png">
-
 ## Overview
 This application aims to automate complex data access tests between Neo4j and PostgreSQL DBMSs and return the results. It provides a streamlined process for setting up the databases, generating fake data, establishing relationships, and executing performance tests.
+
+<img src="https://github.com/JoaoVictorfss/UFU.TCC2.ComplexDataAccess/blob/master/docs/digrama_sequencial.png">
 
 ## Usage
 Follow these steps to use the application:
